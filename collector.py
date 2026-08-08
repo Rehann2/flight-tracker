@@ -180,6 +180,7 @@ def export_data(cfg, con, run_date, results):
     mins = [p["min_price"] for p in pairs_out if p["min_price"]]
     (ROOT / "data" / "latest.json").write_text(json.dumps({
         "run_date": run_date,
+        "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "route": cfg["route"], "trip": cfg["trip"], "filters": cfg["filters"],
         "best": min(mins) if mins else None,
         "avg_of_mins": sum(mins) // len(mins) if mins else None,
