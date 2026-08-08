@@ -1,6 +1,6 @@
 {
  "run_date": "2026-08-08",
- "generated_at": "2026-08-08T11:55:39Z",
+ "generated_at": "2026-08-08T12:22:12Z",
  "route": {
   "origin": "CDG",
   "destination": "BLR",
@@ -16,6 +16,7 @@
   "budget_eur": 900,
   "max_stops": 1,
   "max_duration_hours": 16,
+  "avoid_layovers": [],
   "cabin": "economy",
   "adults": 1
  },
@@ -32,31 +33,46 @@
      "price": 708,
      "airline": "Gulf Air",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 841,
      "airline": "Emirates",
      "duration_min": 730,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "DXB"
+     ]
     },
     {
      "price": 841,
      "airline": "Emirates",
      "duration_min": 835,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "DXB"
+     ]
     },
     {
      "price": 1014,
      "airline": "Etihad",
      "duration_min": 755,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1194,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -70,31 +86,46 @@
      "price": 708,
      "airline": "Gulf Air",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 980,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1029,
      "airline": "Etihad",
      "duration_min": 755,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1067,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1092,
      "airline": "Etihad",
      "duration_min": 735,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     }
    ]
   },
@@ -108,31 +139,46 @@
      "price": 693,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 940,
      "airline": "Lufthansa",
      "duration_min": 700,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 1070,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 1074,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1121,
      "airline": "British Airways",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -146,31 +192,46 @@
      "price": 721,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 963,
      "airline": "Lufthansa",
      "duration_min": 700,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 1028,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1057,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1075,
      "airline": "British Airways",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -184,31 +245,46 @@
      "price": 634,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 807,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
-     "price": 836,
+     "price": 897,
      "airline": "Etihad",
      "duration_min": 735,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 992,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 1027,
      "airline": "Emirates",
      "duration_min": 730,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "DXB"
+     ]
     }
    ]
   },
@@ -222,31 +298,46 @@
      "price": 634,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 867,
      "airline": "Lufthansa",
      "duration_min": 680,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 962,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 973,
      "airline": "Lufthansa",
      "duration_min": 675,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "FRA"
+     ]
     },
     {
      "price": 1027,
      "airline": "Emirates",
      "duration_min": 730,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "DXB"
+     ]
     }
    ]
   },
@@ -260,31 +351,46 @@
      "price": 746,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 855,
      "airline": "Lufthansa",
      "duration_min": 680,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 866,
      "airline": "Etihad",
      "duration_min": 735,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 961,
      "airline": "Lufthansa",
      "duration_min": 675,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "FRA"
+     ]
     },
     {
      "price": 1043,
      "airline": "British Airways",
      "duration_min": 780,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -298,31 +404,46 @@
      "price": 840,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 959,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1017,
      "airline": "Lufthansa",
      "duration_min": 680,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 1046,
      "airline": "Lufthansa",
      "duration_min": 675,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "FRA"
+     ]
     },
     {
      "price": 1093,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -336,31 +457,46 @@
      "price": 840,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 887,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1035,
      "airline": "SWISSOperated by Helvetic",
      "duration_min": 905,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1060,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1083,
      "airline": "British Airways",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -374,31 +510,46 @@
      "price": 900,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 1143,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 1153,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 1182,
      "airline": "Lufthansa",
      "duration_min": 700,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "MUC"
+     ]
     },
     {
      "price": 1198,
      "airline": "Etihad",
      "duration_min": 755,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     }
    ]
   },
@@ -412,31 +563,46 @@
      "price": 742,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 850,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 941,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 988,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 991,
      "airline": "British Airways",
      "duration_min": 775,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     }
    ]
   },
@@ -450,31 +616,46 @@
      "price": 654,
      "airline": "Etihad, Akasa Air",
      "duration_min": 830,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 923,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 942,
      "airline": "British Airways",
      "duration_min": 785,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 947,
      "airline": "Etihad",
      "duration_min": 735,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 1079,
      "airline": "Lufthansa",
      "duration_min": 910,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "FRA"
+     ]
     }
    ]
   },
@@ -488,31 +669,46 @@
      "price": 760,
      "airline": "Gulf Air",
      "duration_min": 765,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "BAH"
+     ]
     },
     {
      "price": 874,
      "airline": "SWISS",
      "duration_min": 750,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "ZRH"
+     ]
     },
     {
      "price": 913,
      "airline": "Etihad",
      "duration_min": 755,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "AUH"
+     ]
     },
     {
      "price": 942,
      "airline": "British Airways",
      "duration_min": 780,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "LHR"
+     ]
     },
     {
      "price": 984,
      "airline": "Lufthansa",
      "duration_min": 675,
-     "stops": 1
+     "stops": 1,
+     "via": [
+      "FRA"
+     ]
     }
    ]
   }
