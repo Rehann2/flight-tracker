@@ -1,0 +1,481 @@
+{
+ "run_date": "2026-08-08",
+ "route": {
+  "origin": "CDG",
+  "destination": "BLR",
+  "origin_alternates": [],
+  "destination_alternates": []
+ },
+ "trip": {
+  "window_start": "2026-12-01",
+  "window_end": "2027-01-21",
+  "trip_days": 40
+ },
+ "filters": {
+  "budget_eur": 900,
+  "max_stops": 1,
+  "max_duration_hours": 16,
+  "cabin": "economy",
+  "adults": 1
+ },
+ "best": 583,
+ "avg_of_mins": 653,
+ "pairs": [
+  {
+   "depart": "2026-12-01",
+   "return": "2027-01-10",
+   "min_price": 720,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTAoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 720,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 865,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 869,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    },
+    {
+     "price": 968,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    },
+    {
+     "price": 968,
+     "airline": "Emirates",
+     "duration_min": 835,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-02",
+   "return": "2027-01-11",
+   "min_price": 638,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTEoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 638,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 742,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    },
+    {
+     "price": 943,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    },
+    {
+     "price": 943,
+     "airline": "Emirates",
+     "duration_min": 835,
+     "stops": 1
+    },
+    {
+     "price": 947,
+     "airline": "Lufthansa",
+     "duration_min": 675,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-03",
+   "return": "2027-01-12",
+   "min_price": 638,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTIoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 638,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 760,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 765,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    },
+    {
+     "price": 887,
+     "airline": "Lufthansa",
+     "duration_min": 675,
+     "stops": 1
+    },
+    {
+     "price": 893,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-04",
+   "return": "2027-01-13",
+   "min_price": 637,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDQoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTMoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 637,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 707,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 720,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 741,
+     "airline": "Etihad",
+     "duration_min": 735,
+     "stops": 1
+    },
+    {
+     "price": 899,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-05",
+   "return": "2027-01-14",
+   "min_price": 663,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDUoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTQoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 663,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 780,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 784,
+     "airline": "Lufthansa",
+     "duration_min": 695,
+     "stops": 1
+    },
+    {
+     "price": 786,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 899,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-06",
+   "return": "2027-01-15",
+   "min_price": 692,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDYoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTUoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 692,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 707,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 711,
+     "airline": "Lufthansa",
+     "duration_min": 695,
+     "stops": 1
+    },
+    {
+     "price": 874,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    },
+    {
+     "price": 874,
+     "airline": "Emirates",
+     "duration_min": 835,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-07",
+   "return": "2027-01-16",
+   "min_price": 646,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDcoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 646,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 716,
+     "airline": "Etihad, Akasa Air",
+     "duration_min": 830,
+     "stops": 1
+    },
+    {
+     "price": 720,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 741,
+     "airline": "Etihad",
+     "duration_min": 735,
+     "stops": 1
+    },
+    {
+     "price": 899,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-08",
+   "return": "2027-01-17",
+   "min_price": 638,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDgoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTcoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 638,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 689,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 742,
+     "airline": "Lufthansa",
+     "duration_min": 870,
+     "stops": 1
+    },
+    {
+     "price": 792,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 796,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-09",
+   "return": "2027-01-18",
+   "min_price": 583,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDkoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTgoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 583,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 664,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 716,
+     "airline": "Etihad",
+     "duration_min": 735,
+     "stops": 1
+    },
+    {
+     "price": 796,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    },
+    {
+     "price": 874,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-10",
+   "return": "2027-01-19",
+   "min_price": 612,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTAoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTkoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 612,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 664,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 770,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 775,
+     "airline": "Lufthansa",
+     "duration_min": 680,
+     "stops": 1
+    },
+    {
+     "price": 874,
+     "airline": "Emirates",
+     "duration_min": 730,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-11",
+   "return": "2027-01-20",
+   "min_price": 637,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjAoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 637,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 689,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 741,
+     "airline": "Etihad",
+     "duration_min": 735,
+     "stops": 1
+    },
+    {
+     "price": 768,
+     "airline": "SWISS",
+     "duration_min": 750,
+     "stops": 1
+    },
+    {
+     "price": 1057,
+     "airline": "British Airways",
+     "duration_min": 785,
+     "stops": 1
+    }
+   ]
+  },
+  {
+   "depart": "2026-12-12",
+   "return": "2027-01-21",
+   "min_price": 733,
+   "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjEoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+   "top": [
+    {
+     "price": 733,
+     "airline": "Gulf Air",
+     "duration_min": 775,
+     "stops": 1
+    },
+    {
+     "price": 736,
+     "airline": "Etihad",
+     "duration_min": 755,
+     "stops": 1
+    },
+    {
+     "price": 867,
+     "airline": "Lufthansa",
+     "duration_min": 695,
+     "stops": 1
+    },
+    {
+     "price": 944,
+     "airline": "British Airways",
+     "duration_min": 785,
+     "stops": 1
+    },
+    {
+     "price": 994,
+     "airline": "British Airways",
+     "duration_min": 775,
+     "stops": 1
+    }
+   ]
+  }
+ ]
+}
