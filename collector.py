@@ -41,6 +41,14 @@ def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", str(s).lower()).strip("-")
 
 
+def config_sig(t):
+    """Signature of the price-affecting filters; a change restarts the trip's
+    history thread (budget is display-only, so it is deliberately excluded)."""
+    avoid = ";".join(sorted(str(a) for a in (t.get("avoid_layovers") or [])))  # ';' — sig lives in a CSV column
+    return (f"{t['origin']}-{t['destination']}|{t['trip_days']}|{t['max_stops']}"
+            f"|{t['max_duration_hours']}|{avoid}|{t['cabin']}|{t['adults']}")
+
+
 def load_trips():
     trips = []
     for f in sorted((ROOT / "trips").glob("*.yaml")):
@@ -153,20 +161,23 @@ def store(run_date, trip_results):
         via TEXT, route TEXT, trip_days INTEGER)""")
     cols = [r[1] for r in con.execute("PRAGMA table_info(snapshots)")]
     for col, typ in (("via", "TEXT"), ("route", "TEXT"), ("trip_days", "INTEGER"),
-                     ("user", "TEXT"), ("trip_id", "TEXT")):
+                     ("user", "TEXT"), ("trip_id", "TEXT"), ("config_sig", "TEXT")):
         if col not in cols:
             con.execute(f"ALTER TABLE snapshots ADD COLUMN {col} {typ}")
     # legacy rows predate users/trips; they were all rehan's CDG-BLR experiments
     con.execute("UPDATE snapshots SET user='rehan', trip_id='rehan/blr-winter' WHERE trip_id IS NULL")
+    for t, _ in trip_results:
+        con.execute("UPDATE snapshots SET config_sig=? WHERE trip_id=? AND config_sig IS NULL",
+                    (config_sig(t), t["id"]))
     con.execute("DELETE FROM snapshots WHERE run_date = ?", (run_date,))
     for t, results in trip_results:
         for depart, ret, rows in results:
             for rank, r in enumerate(sorted(rows, key=lambda x: x["price"])):
-                con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             (run_date, depart, ret, r["price"], r["airline"],
                              r["duration_min"], r["stops"], rank,
                              ",".join(r.get("via") or []), t["route"], t["trip_days"],
-                             t["user"], t["id"]))
+                             t["user"], t["id"], config_sig(t)))
     con.commit()
     return con
 
@@ -200,10 +211,10 @@ def export_data(con, run_date, trip_results):
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "trips": trips_out,
     }, indent=1, default=str))
-    hist = con.execute("""SELECT run_date, trip_id, depart, ret, MIN(price), route, trip_days
+    hist = con.execute("""SELECT run_date, trip_id, depart, ret, MIN(price), config_sig
                           FROM snapshots GROUP BY run_date, trip_id, depart
                           ORDER BY run_date, trip_id, depart""").fetchall()
-    lines = ["run_date,trip_id,depart,return,min_price,route,trip_days"] + [
+    lines = ["run_date,trip_id,depart,return,min_price,config_sig"] + [
         ",".join("" if v is None else str(v) for v in r) for r in hist]
     (ROOT / "data" / "history.csv").write_text("\n".join(lines) + "\n")
 

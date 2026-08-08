@@ -33,8 +33,16 @@ def recipients_map():
     return {"*": raw}  # legacy plain address: send everything there
 
 
+def config_sig(c):
+    avoid = ";".join(sorted(str(a) for a in (c.get("avoid_layovers") or [])))
+    return (f"{c['origin']}-{c['destination']}|{c['trip_days']}|{c['max_stops']}"
+            f"|{c['max_duration_hours']}|{avoid}|{c['cabin']}|{c['adults']}")
+
+
 def deltas(trip, hist):
-    rows = [h for h in hist if h["trip_id"] == trip["id"]]
+    sig = config_sig(trip["config"])
+    rows = [h for h in hist if h["trip_id"] == trip["id"]
+            and (not h.get("config_sig") or h["config_sig"] == sig)]
     runs = sorted({h["run_date"] for h in rows})
     prev_run = runs[-2] if len(runs) >= 2 else None
     prev = {h["depart"]: int(h["min_price"]) for h in rows

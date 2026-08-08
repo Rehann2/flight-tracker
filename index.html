@@ -291,8 +291,14 @@ let ACTIVE_USER = localStorage.getItem("ft_user") || "";
 
 const parseHistory = (text) => text.trim().split("\n").slice(1).filter(Boolean).map((l) => {
   const p = l.split(",");
-  return { run_date: p[0], trip_id: p[1], depart: p[2], ret: p[3], min_price: +p[4] };
+  return { run_date: p[0], trip_id: p[1], depart: p[2], ret: p[3], min_price: +p[4], sig: p[5] || "" };
 });
+// signature of price-affecting filters — must mirror collector.config_sig()
+const cfgSig = (c) => `${c.origin}-${c.destination}|${c.trip_days}|${c.max_stops}|${c.max_duration_hours}|` +
+  (c.avoid_layovers || []).map(String).sort().join(";") + `|${c.cabin}|${c.adults}`;
+// a trip's comparable history: same trip AND same filter version (legacy rows pass)
+const tripHist = (trip) => HISTORY.filter((h) =>
+  h.trip_id === trip.id && (!h.sig || h.sig === cfgSig(trip.config)));
 
 async function loadAll() {
   try {
@@ -468,7 +474,7 @@ function drawBars(el, trip, pairs, best) {
 }
 
 function drawHistory(el, trip) {
-  const hist = HISTORY.filter((h) => h.trip_id === trip.id);
+  const hist = tripHist(trip);
   const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   if (runs.length < 2) {
     el.innerHTML = `<div class="empty"><b>History builds from this trip's second scan.</b><br>
@@ -509,7 +515,7 @@ function drawHistory(el, trip) {
 }
 
 function drawTable(el, trip, pairs, best) {
-  const hist = HISTORY.filter((h) => h.trip_id === trip.id);
+  const hist = tripHist(trip);
   const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   const prevRun = runs.length >= 2 ? runs[runs.length - 2] : null;
   const prev = {};
