@@ -1,0 +1,15 @@
+# One tracked trip. All fields editable here or from the dashboard drawer.
+user: rehan
+name: Delhi Middle East
+origin: CDG
+destination: DEL
+window_start: 2026-12-12
+window_end: 2027-02-07
+trip_days: 50
+budget_eur: 800
+max_stops: 1
+max_duration_hours: 14
+avoid_layovers: [middle-east]
+cabin: economy
+adults: 1
+alert_threshold_pct: 3
