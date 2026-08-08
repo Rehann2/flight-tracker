@@ -2,11 +2,15 @@ name: daily-scan
 
 on:
   schedule:
-    - cron: "30 5 * * *"   # 05:30 UTC daily (~06:30/07:30 Paris)
+    - cron: "0 6 * * *"   # 06:00 UTC daily = 08:00 Paris in summer, 07:00 in winter (cron is UTC-only)
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: daily-scan
+  cancel-in-progress: false
 
 jobs:
   scan:
@@ -24,7 +28,7 @@ jobs:
           git config user.name "flight-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/
-          git diff --cached --quiet || { git commit -m "daily scan $(date -u +%F)"; git pull --rebase origin main; git push; }
+          git diff --cached --quiet || { git commit -m "daily scan $(date -u +%F)"; git pull --rebase -X theirs origin main; git push; }
       - name: Send digest email
         env:
           SMTP_USER: ${{ secrets.SMTP_USER }}
