@@ -67,7 +67,7 @@ def build(latest, hist, cfg):
         rows += f"""<tr style="background:{'#E7EEF5' if is_best else 'transparent'}">
           <td style="padding:6px 10px">{p['depart'][5:]} → {p['return'][5:]}</td>
           <td style="padding:6px 10px;font-weight:bold">€{p['min_price']}{' 🏆' if is_best else ''}</td>
-          <td style="padding:6px 10px">{t0.get('airline', '—')}</td>
+          <td style="padding:6px 10px">{t0.get('airline', '—')}{(' via ' + '/'.join(t0['via'])) if t0.get('via') else ''}</td>
           <td style="padding:6px 10px;color:{dcol}">{dtxt}</td>
           <td style="padding:6px 10px"><a href="{p['url']}">book</a></td></tr>"""
 
@@ -100,7 +100,7 @@ def build(latest, hist, cfg):
 
 
 def main():
-    to = [a.strip() for a in os.environ.get("DIGEST_TO", "").split(",") if a.strip()]
+    to = list(dict.fromkeys(a.strip().lower() for a in os.environ.get("DIGEST_TO", "").split(",") if a.strip()))
     user = os.environ.get("SMTP_USER", "")
     pwd = os.environ.get("SMTP_PASSWORD", "")
     latest, hist, cfg = load()

@@ -21,6 +21,28 @@ from fast_flights import FlightQuery, Passengers, create_query
 ROOT = Path(__file__).parent
 DB = ROOT / "data" / "tracker.sqlite"
 PRICE_RE = re.compile(r"€\s?[\d,]+")
+LAYOVER_RE = re.compile(r"(?:\d+\s*hr(?:\s*\d+\s*min)?|\d+\s*min)\s+([A-Z]{3})\b")
+
+# Connection airports covered by the "middle-east" preset in avoid_layovers.
+# Gulf, Levant, Iraq, Iran, Yemen. Turkey (IST/SAW) and Egypt (CAI) are NOT
+# included — add their codes to avoid_layovers explicitly if wanted.
+MIDDLE_EAST_HUBS = {
+    "DXB", "DWC", "SHJ", "AUH", "DOH", "BAH", "KWI", "MCT", "SLL",
+    "RUH", "JED", "DMM", "MED", "AHB",
+    "AMM", "AQJ", "BEY", "TLV", "DAM", "ALP",
+    "BGW", "BSR", "NJF", "EBL", "ISU",
+    "IKA", "MHD", "SYZ", "SAH", "ADE",
+}
+
+
+def expand_avoid(cfg):
+    out = set()
+    for item in cfg["filters"].get("avoid_layovers") or []:
+        if str(item).lower().replace("_", "-") in ("middle-east", "middleeast", "me"):
+            out |= MIDDLE_EAST_HUBS
+        else:
+            out.add(str(item).upper())
+    return out
 
 
 def load_config():
@@ -66,8 +88,9 @@ def parse_row(text):
             airline = lines[i - 1] if i else None
         if re.fullmatch(r"Nonstop|\d+ stops?", l):
             stops = 0 if l == "Nonstop" else int(l.split()[0])
+    via = [c for l in lines for c in LAYOVER_RE.findall(l)]
     return {"price": price, "airline": airline, "duration_min": duration_min,
-            "stops": stops, "raw": text}
+            "stops": stops, "via": via, "raw": text}
 
 
 def accept_consent(page):
@@ -103,23 +126,37 @@ def fetch_pair(context, url, attempts=3):
 
 def apply_filters(rows, cfg):
     f = cfg["filters"]
+    avoid = expand_avoid(cfg)
     return [r for r in rows
             if (r["duration_min"] or 0) <= f["max_duration_hours"] * 60
-            and (r["stops"] is None or r["stops"] <= f["max_stops"])]
+            and (r["stops"] is None or r["stops"] <= f["max_stops"])
+            and not (set(r.get("via") or []) & avoid)]
 
 
-def store(run_date, results):
+def store(run_date, results, cfg):
+    route = f"{cfg['route']['origin']}-{cfg['route']['destination']}"
+    trip_days = cfg["trip"]["trip_days"]
     DB.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB)
     con.execute("""CREATE TABLE IF NOT EXISTS snapshots (
         run_date TEXT, depart TEXT, ret TEXT, price INTEGER,
         airline TEXT, duration_min INTEGER, stops INTEGER, rank INTEGER)""")
+    cols = [r[1] for r in con.execute("PRAGMA table_info(snapshots)")]
+    if "via" not in cols:
+        con.execute("ALTER TABLE snapshots ADD COLUMN via TEXT")
+    if "route" not in cols:
+        con.execute("ALTER TABLE snapshots ADD COLUMN route TEXT")
+        con.execute("ALTER TABLE snapshots ADD COLUMN trip_days INTEGER")
+        # legacy rows predate config stamping; backfill with the current config
+        con.execute("UPDATE snapshots SET route = ?, trip_days = ? WHERE route IS NULL",
+                    (route, trip_days))
     con.execute("DELETE FROM snapshots WHERE run_date = ?", (run_date,))
     for depart, ret, rows in results:
         for rank, r in enumerate(sorted(rows, key=lambda x: x["price"])):
-            con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?)",
+            con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                         (run_date, depart, ret, r["price"], r["airline"],
-                         r["duration_min"], r["stops"], rank))
+                         r["duration_min"], r["stops"], rank,
+                         ",".join(r.get("via") or []), route, trip_days))
     con.commit()
     return con
 
@@ -174,7 +211,7 @@ def export_data(cfg, con, run_date, results):
             "depart": depart, "return": ret,
             "min_price": kept[0]["price"] if kept else None,
             "url": build_url(cfg, depart, ret),
-            "top": [{k: r[k] for k in ("price", "airline", "duration_min", "stops")}
+            "top": [{k: r[k] for k in ("price", "airline", "duration_min", "stops", "via")}
                     for r in kept[:5]],
         })
     mins = [p["min_price"] for p in pairs_out if p["min_price"]]
@@ -186,9 +223,11 @@ def export_data(cfg, con, run_date, results):
         "avg_of_mins": sum(mins) // len(mins) if mins else None,
         "pairs": pairs_out,
     }, indent=1, default=str))
-    hist = con.execute("""SELECT run_date, depart, ret, MIN(price) FROM snapshots
-                          GROUP BY run_date, depart ORDER BY run_date, depart""").fetchall()
-    lines = ["run_date,depart,return,min_price"] + [",".join(map(str, r)) for r in hist]
+    hist = con.execute("""SELECT run_date, depart, ret, MIN(price), route, trip_days
+                          FROM snapshots GROUP BY run_date, depart
+                          ORDER BY run_date, depart""").fetchall()
+    lines = ["run_date,depart,return,min_price,route,trip_days"] + [
+        ",".join("" if v is None else str(v) for v in r) for r in hist]
     (ROOT / "data" / "history.csv").write_text("\n".join(lines) + "\n")
 
 
@@ -208,7 +247,7 @@ def main():
                   flush=True)
             results.append((depart, ret, rows))
         browser.close()
-    con = store(run_date, results)
+    con = store(run_date, results, cfg)
     export_data(cfg, con, run_date, results)
     digest(cfg, con, run_date, results)
     con.close()

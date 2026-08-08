@@ -19,6 +19,7 @@ filters:
   budget_eur: 900             # PLACEHOLDER — set your real cap; options above it are hidden from top list
   max_stops: 1                # 0 = nonstop only
   max_duration_hours: 16      # outbound leg duration cap (list shows outbound; return chosen at booking)
+  avoid_layovers: []          # airport codes to exclude as connections, and/or the preset "middle-east"
   cabin: economy              # economy | premium-economy | business | first
   adults: 1
 

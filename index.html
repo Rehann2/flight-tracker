@@ -219,7 +219,7 @@
     <div class="tablewrap">
       <table>
         <thead>
-          <tr><th>Depart</th><th>Return</th><th>Price</th><th>Carrier</th><th>Stops</th><th>Outbound</th><th>Δ day</th><th></th></tr>
+          <tr><th>Depart</th><th>Return</th><th>Price</th><th>Carrier</th><th>Stops</th><th>Via</th><th>Outbound</th><th>Δ day</th><th></th></tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
@@ -261,6 +261,13 @@
         <select id="f-stops"><option value="0">Nonstop only</option><option value="1">1</option><option value="2">2</option></select>
       </div>
       <div class="field"><label for="f-hours">Max outbound (h)</label><input id="f-hours" type="number" min="1"></div>
+    </div>
+    <div class="field">
+      <label>Connections</label>
+      <label style="display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer;">
+        <input type="checkbox" id="f-avoid-me" style="width:16px; height:16px; accent-color:var(--accent);">
+        Avoid Middle East layovers
+      </label>
     </div>
     <div class="field"><label for="f-cabin">Cabin</label>
       <select id="f-cabin">
@@ -311,9 +318,16 @@ let LATEST = null, HISTORY = [], CONFIG_TEXT = "", LAST_LOAD = 0, RESCANNING = f
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const b64ToText = (b) => decodeURIComponent(escape(atob(b.replace(/\n/g, ""))));
 const parseHistory = (text) => text.trim().split("\n").slice(1).filter(Boolean).map((l) => {
-  const [run_date, depart, ret, min_price] = l.split(",");
-  return { run_date, depart, ret, min_price: +min_price };
+  const p = l.split(",");
+  return { run_date: p[0], depart: p[1], ret: p[2], min_price: +p[3], route: p[4] || "", trip: p[5] || "" };
 });
+// history rows from other route/trip-length configs aren't comparable — hide them
+const histForCurrent = () => {
+  if (!LATEST) return HISTORY;
+  const route = LATEST.route.origin + "-" + LATEST.route.destination;
+  const trip = String(LATEST.trip.trip_days);
+  return HISTORY.filter((h) => !h.route || (h.route === route && h.trip === trip));
+};
 
 /* ---------- data loading ---------- */
 async function loadAll() {
@@ -353,7 +367,9 @@ function render() {
      <span>Cabin <b>${cfg.filters.cabin}</b></span>
      <span>Stops <b>≤ ${cfg.filters.max_stops}</b></span>
      <span>Outbound <b>≤ ${cfg.filters.max_duration_hours} h</b></span>
-     <span>Budget <b>€${budget}</b></span>`;
+     <span>Budget <b>€${budget}</b></span>` +
+    ((cfg.filters.avoid_layovers || []).length
+      ? `<span>Avoiding <b>${cfg.filters.avoid_layovers.join(", ")}</b></span>` : "");
 
   const best = pairs.reduce((a, b) => (b.min_price < a.min_price ? b : a));
   const avg = Math.round(pairs.reduce((s, x) => s + x.min_price, 0) / pairs.length);
@@ -415,7 +431,7 @@ function drawBars(pairs, best, budget) {
     const show = () => {
       tip.innerHTML = `<span class="tprice num">${fmtEUR(x.min_price)}</span> <span class="tmuted">round trip</span><br>
         ${fmtDate(x.depart)} → ${fmtDate(x["return"])}<br>
-        <span class="tmuted">${t0.airline || ""}${t0.stops != null ? " · " + t0.stops + " stop" : ""}${t0.duration_min ? " · " + fmtDur(t0.duration_min) + " out" : ""}</span><br>
+        <span class="tmuted">${t0.airline || ""}${t0.stops != null ? " · " + t0.stops + " stop" : ""}${t0.via && t0.via.length ? " via " + t0.via.join("/") : ""}${t0.duration_min ? " · " + fmtDur(t0.duration_min) + " out" : ""}</span><br>
         <span class="tmuted">click for live prices ↗</span>`;
       tip.style.display = "block";
     };
@@ -434,14 +450,17 @@ function drawBars(pairs, best, budget) {
 }
 
 function drawHistory() {
-  const runs = [...new Set(HISTORY.map((h) => h.run_date))].sort();
+  const hist = histForCurrent();
+  const hiddenNote = hist.length < HISTORY.length
+    ? `<p class="hint" style="margin:10px 0 0">Scans made with a different route or trip length are hidden from this chart.</p>` : "";
+  const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   if (runs.length < 2) {
-    $("history").innerHTML = `<div class="empty"><b>History builds from the second scan.</b><br>
-      Each morning adds one point — this chart will show whether the market is rising or falling.</div>`;
+    $("history").innerHTML = `<div class="empty"><b>History builds from the second scan with these settings.</b><br>
+      Each morning adds one point — this chart will show whether the market is rising or falling.</div>` + hiddenNote;
     return;
   }
   const series = runs.map((rd) => {
-    const prices = HISTORY.filter((h) => h.run_date === rd).map((h) => h.min_price);
+    const prices = hist.filter((h) => h.run_date === rd).map((h) => h.min_price);
     return { rd, best: Math.min(...prices), avg: Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) };
   });
   const W = 920, H = 260, L = 52, R = 16, T = 18, B = 34;
@@ -472,14 +491,15 @@ function drawHistory() {
     }
   });
   svg += `</svg>`;
-  $("history").innerHTML = svg;
+  $("history").innerHTML = svg + hiddenNote;
 }
 
 function drawTable(pairs, best) {
-  const runs = [...new Set(HISTORY.map((h) => h.run_date))].sort();
+  const hist = histForCurrent();
+  const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   const prevRun = runs.length >= 2 ? runs[runs.length - 2] : null;
   const prev = {};
-  if (prevRun) HISTORY.filter((h) => h.run_date === prevRun).forEach((h) => (prev[h.depart] = h.min_price));
+  if (prevRun) hist.filter((h) => h.run_date === prevRun).forEach((h) => (prev[h.depart] = h.min_price));
 
   $("rows").innerHTML = pairs.map((x) => {
     const t0 = x.top[0] || {};
@@ -495,6 +515,7 @@ function drawTable(pairs, best) {
       <td class="price num">${fmtEUR(x.min_price)}${x === best ? ' <span class="chip">BEST</span>' : ""}</td>
       <td>${t0.airline || "—"}</td>
       <td class="num">${t0.stops != null ? t0.stops : "—"}</td>
+      <td>${t0.via && t0.via.length ? t0.via.join(", ") : (t0.stops === 0 ? "nonstop" : "—")}</td>
       <td class="num">${t0.duration_min ? fmtDur(t0.duration_min) : "—"}</td>
       <td class="num">${delta}</td>
       <td><a href="${x.url}" target="_blank" rel="noopener">Open ↗</a></td>
@@ -509,6 +530,12 @@ const yamlGet = (key) => {
 };
 const yamlSet = (text, key, val) =>
   text.replace(new RegExp("^(\\s*" + key + ":\\s*)([^\\s#]+)", "m"), (_, p1) => p1 + val);
+const yamlGetList = (key) => {
+  const m = CONFIG_TEXT.match(new RegExp("^\\s*" + key + ":\\s*\\[([^\\]]*)\\]", "m"));
+  return m ? m[1].split(",").map((s) => s.trim()).filter(Boolean) : [];
+};
+const yamlSetList = (text, key, arr) =>
+  text.replace(new RegExp("^(\\s*" + key + ":\\s*)\\[[^\\]]*\\]", "m"), (_, p1) => p1 + "[" + arr.join(", ") + "]");
 
 function fillForm() {
   $("f-origin").value = yamlGet("origin");
@@ -520,6 +547,7 @@ function fillForm() {
   $("f-stops").value = yamlGet("max_stops");
   $("f-hours").value = yamlGet("max_duration_hours");
   $("f-cabin").value = yamlGet("cabin");
+  $("f-avoid-me").checked = yamlGetList("avoid_layovers").some((v) => v.toLowerCase() === "middle-east");
   $("f-token").value = localStorage.getItem("ft_token") || "";
   if (!localStorage.getItem("ft_token")) $("tok-details").open = true;
   updateMatrixNote();
@@ -555,6 +583,9 @@ function buildNewConfig() {
   t = yamlSet(t, "max_stops", $("f-stops").value);
   t = yamlSet(t, "max_duration_hours", $("f-hours").value);
   t = yamlSet(t, "cabin", $("f-cabin").value);
+  const avoid = yamlGetList("avoid_layovers").filter((v) => v.toLowerCase() !== "middle-east");
+  if ($("f-avoid-me").checked) avoid.unshift("middle-east");
+  t = yamlSetList(t, "avoid_layovers", avoid);
   return t;
 }
 
