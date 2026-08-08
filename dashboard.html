@@ -1,0 +1,325 @@
+<title>Flight Tracker — CDG ⇄ BLR</title>
+<style>
+  :root {
+    --bg: #F2F5F8;
+    --panel: #FFFFFF;
+    --ink: #182430;
+    --muted: #5C6B7A;
+    --line: #D8E0E8;
+    --accent: #2F6DA0;
+    --bar: #6099CC;
+    --bar-best: #1A5A94;
+    --alert: #A8542F;
+    --chip: #E7EEF5;
+    --board: #14202C;
+    --board-ink: #E8EDF2;
+    --board-muted: #8FA3B5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10161D;
+      --panel: #171F29;
+      --ink: #E8EDF2;
+      --muted: #9AA8B6;
+      --line: #2A3644;
+      --accent: #7FB2DF;
+      --bar: #5E93C4;
+      --bar-best: #A9D2F5;
+      --alert: #D08054;
+      --chip: #22303E;
+      --board: #0B1218;
+      --board-ink: #E8EDF2;
+      --board-muted: #7E93A6;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161D;
+    --panel: #171F29;
+    --ink: #E8EDF2;
+    --muted: #9AA8B6;
+    --line: #2A3644;
+    --accent: #7FB2DF;
+    --bar: #5E93C4;
+    --bar-best: #A9D2F5;
+    --alert: #D08054;
+    --chip: #22303E;
+    --board: #0B1218;
+    --board-ink: #E8EDF2;
+    --board-muted: #7E93A6;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", sans-serif;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace; }
+  .num { font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 20px 56px; display: flex; flex-direction: column; gap: 20px; }
+  a { color: var(--accent); }
+
+  /* Route board */
+  .board {
+    background: var(--board);
+    color: var(--board-ink);
+    border-radius: 10px;
+    padding: 22px 26px 18px;
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace;
+  }
+  .board .route { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .board .codes { font-size: 34px; font-weight: 700; letter-spacing: 0.06em; }
+  .board .cities { color: var(--board-muted); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .board .specs { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(143,163,181,0.25); }
+  .board .specs span { color: var(--board-muted); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .board .specs b { color: var(--board-ink); font-weight: 600; }
+
+  /* Stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 12px; }
+  .tile .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .tile .value { font-size: 26px; font-weight: 700; margin-top: 2px; }
+  .tile .sub { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+  .tile.best .value { color: var(--bar-best); }
+
+  /* Panels */
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; }
+  .panel h2 { margin: 0 0 2px; font-size: 15.5px; }
+  .panel .hint { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); }
+
+  svg { width: 100%; height: auto; display: block; }
+  .bar-hit { cursor: pointer; }
+  .bar-hit:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .bar-hit path { transition: opacity 120ms ease; }
+  }
+  .bar-hit:hover path, .bar-hit:focus path { opacity: 0.82; }
+
+  #tip {
+    position: fixed; z-index: 10; display: none; pointer-events: none;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: 9px 12px; font-size: 12.5px; line-height: 1.5;
+    box-shadow: 0 4px 14px rgba(10, 20, 30, 0.18); max-width: 240px;
+  }
+  #tip .tprice { font-size: 15px; font-weight: 700; }
+  #tip .tmuted { color: var(--muted); }
+
+  /* Table */
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; }
+  th { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: left; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  tr:last-child td { border-bottom: none; }
+  td.price { font-weight: 700; }
+  tr.best-row td { background: var(--chip); }
+  tr.best-row td:first-child { box-shadow: inset 3px 0 0 var(--bar-best); }
+  .chip {
+    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--panel); background: var(--bar-best); border-radius: 999px;
+    padding: 1px 8px; vertical-align: 1px;
+  }
+
+  .empty {
+    border: 1.5px dashed var(--line); border-radius: 10px; padding: 22px;
+    color: var(--muted); font-size: 13.5px; text-align: center;
+  }
+  .foot { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+
+  @media (max-width: 720px) {
+    .tiles { grid-template-columns: 1fr 1fr; }
+    .board .codes { font-size: 26px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="board">
+    <div class="route">
+      <span class="codes">CDG ⇄ BLR</span>
+      <span class="cities">Paris — Bengaluru · round trip</span>
+    </div>
+    <div class="specs">
+      <span>Trip <b>40 days</b></span>
+      <span>Window <b>Dec 01 → Jan 21</b></span>
+      <span>Cabin <b>Economy</b></span>
+      <span>Stops <b>≤ 1</b></span>
+      <span>Outbound <b>≤ 16 h</b></span>
+      <span>Budget <b>€900</b></span>
+      <span>Scanned <b id="scanned">—</b></span>
+    </div>
+  </header>
+
+  <section class="tiles">
+    <div class="tile best">
+      <div class="label">Best price</div>
+      <div class="value num" id="kpi-best">—</div>
+      <div class="sub" id="kpi-best-sub">—</div>
+    </div>
+    <div class="tile">
+      <div class="label">Average of date minimums</div>
+      <div class="value num" id="kpi-avg">—</div>
+      <div class="sub" id="kpi-avg-sub">—</div>
+    </div>
+    <div class="tile">
+      <div class="label">Within budget</div>
+      <div class="value num" id="kpi-budget">—</div>
+      <div class="sub">departure dates under €900</div>
+    </div>
+    <div class="tile">
+      <div class="label">Cheapest carrier</div>
+      <div class="value" id="kpi-carrier" style="font-size:19px; padding-top:5px;">—</div>
+      <div class="sub" id="kpi-carrier-sub">—</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Cheapest round trip by departure day</h2>
+    <p class="hint">Each bar is the lowest qualifying fare for that departure (return exactly 40 days later). Click a bar to open the live Google Flights page.</p>
+    <div id="chart"></div>
+  </section>
+
+  <section class="panel">
+    <h2>All tracked dates</h2>
+    <p class="hint">Day-over-day movement appears from the second scan onward.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Depart</th><th>Return</th><th>Price</th><th>Carrier</th><th>Stops</th><th>Outbound</th><th>Δ day</th><th></th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="empty">
+    <b>Price history builds from tomorrow.</b><br>
+    Every morning's scan adds one point per departure date — this panel becomes the
+    movement chart that shows whether the market is rising or falling.
+  </section>
+
+  <p class="foot">
+    Filters live in <a href="https://github.com/Rehann2/flight-tracker/edit/main/config.yaml">config.yaml — edit on GitHub</a>
+    and apply on the next scan · data collected daily at 06:30 Paris by
+    <a href="https://github.com/Rehann2/flight-tracker/actions">GitHub Actions</a> ·
+    prices are session-indicative (± a few %); the linked Google Flights page shows the live bookable fare.
+  </p>
+
+</div>
+
+<div id="tip" role="status"></div>
+
+<script>
+const DATA = {
+  run_date: "2026-08-08",
+  budget: 900,
+  pairs: [
+    { d: "2026-12-01", r: "2027-01-10", p: 720, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTAoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-02", r: "2027-01-11", p: 638, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTEoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-03", r: "2027-01-12", p: 638, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTIoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-04", r: "2027-01-13", p: 637, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDQoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTMoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-05", r: "2027-01-14", p: 663, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDUoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTQoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-06", r: "2027-01-15", p: 692, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDYoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTUoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-07", r: "2027-01-16", p: 646, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDcoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-08", r: "2027-01-17", p: 638, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDgoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTcoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-09", r: "2027-01-18", p: 583, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDkoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTgoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-10", r: "2027-01-19", p: 612, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTAoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTkoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-11", r: "2027-01-20", p: 637, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjAoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+    { d: "2026-12-12", r: "2027-01-21", p: 733, a: "Gulf Air", s: 1, m: 775, u: "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjEoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&curr=EUR&hl=en" },
+  ],
+};
+
+const fmtEUR = (v) => "€" + v.toLocaleString("en-IE");
+const fmtDate = (iso) => {
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+};
+const fmtDur = (m) => Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0");
+
+const pairs = DATA.pairs;
+const best = pairs.reduce((a, b) => (b.p < a.p ? b : a));
+const avg = Math.round(pairs.reduce((s, x) => s + x.p, 0) / pairs.length);
+const under = pairs.filter((x) => x.p <= DATA.budget).length;
+
+document.getElementById("scanned").textContent = fmtDate(DATA.run_date);
+document.getElementById("kpi-best").textContent = fmtEUR(best.p);
+document.getElementById("kpi-best-sub").textContent =
+  fmtDate(best.d) + " → " + fmtDate(best.r) + " · " + best.a;
+document.getElementById("kpi-avg").textContent = fmtEUR(avg);
+document.getElementById("kpi-avg-sub").textContent = "across " + pairs.length + " departure dates";
+document.getElementById("kpi-budget").textContent = under + "/" + pairs.length;
+const carriers = [...new Set(pairs.map((x) => x.a))];
+document.getElementById("kpi-carrier").textContent = carriers.join(", ");
+document.getElementById("kpi-carrier-sub").textContent =
+  carriers.length === 1 ? "cheapest on all " + pairs.length + " dates" : "by departure date";
+
+/* ---- chart ---- */
+const W = 920, H = 330, L = 52, R = 12, T = 26, B = 40;
+const plotW = W - L - R, plotH = H - T - B, MAX = 950;
+const y = (v) => T + plotH - (v / MAX) * plotH;
+const step = plotW / pairs.length, barW = Math.min(40, step * 0.52);
+
+let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart: cheapest 40-day round trip per December departure day, €583 to €733">`;
+
+[250, 500, 750].forEach((g) => {
+  svg += `<line x1="${L}" y1="${y(g)}" x2="${W - R}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/>
+    <text x="${L - 8}" y="${y(g) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" class="num">€${g}</text>`;
+});
+svg += `<line x1="${L}" y1="${y(DATA.budget)}" x2="${W - R}" y2="${y(DATA.budget)}" stroke="var(--alert)" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="${W - R}" y="${y(DATA.budget) - 6}" text-anchor="end" font-size="11" fill="var(--alert)">budget €${DATA.budget}</text>`;
+
+pairs.forEach((x, i) => {
+  const cx = L + step * i + step / 2, x0 = cx - barW / 2, yT = y(x.p), base = T + plotH;
+  const fill = x === best ? "var(--bar-best)" : "var(--bar)";
+  const rr = 4;
+  svg += `<g class="bar-hit" tabindex="0" role="link" data-i="${i}"
+      aria-label="Depart ${fmtDate(x.d)}, return ${fmtDate(x.r)}: ${fmtEUR(x.p)}, ${x.a}. Opens Google Flights.">
+    <path d="M${x0},${base} V${yT + rr} Q${x0},${yT} ${x0 + rr},${yT} H${x0 + barW - rr} Q${x0 + barW},${yT} ${x0 + barW},${yT + rr} V${base} Z" fill="${fill}"/>
+    <rect x="${cx - step / 2}" y="${T}" width="${step}" height="${plotH + 24}" fill="transparent"/>
+    <text x="${cx}" y="${base + 16}" text-anchor="middle" font-size="11.5" fill="var(--muted)" class="num">${x.d.slice(8)}</text>
+  </g>`;
+  if (x === best) {
+    svg += `<text x="${cx}" y="${yT - 8}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--bar-best)" class="num">${fmtEUR(x.p)}</text>`;
+  }
+});
+svg += `<line x1="${L}" y1="${T + plotH}" x2="${W - R}" y2="${T + plotH}" stroke="var(--line)" stroke-width="1.5"/>
+  <text x="${L + plotW / 2}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--muted)" letter-spacing="1.5">DECEMBER DEPARTURE DAY</text></svg>`;
+document.getElementById("chart").innerHTML = svg;
+
+/* ---- tooltip + click ---- */
+const tip = document.getElementById("tip");
+document.querySelectorAll(".bar-hit").forEach((g) => {
+  const x = pairs[+g.dataset.i];
+  const show = () => {
+    tip.innerHTML = `<span class="tprice num">${fmtEUR(x.p)}</span> <span class="tmuted">round trip</span><br>
+      ${fmtDate(x.d)} → ${fmtDate(x.r)}<br>
+      <span class="tmuted">${x.a} · ${x.s} stop · ${fmtDur(x.m)} out</span><br>
+      <span class="tmuted">click for live prices ↗</span>`;
+    tip.style.display = "block";
+  };
+  g.addEventListener("mouseenter", show);
+  g.addEventListener("focus", () => { show(); const r = g.getBoundingClientRect(); tip.style.left = r.left + "px"; tip.style.top = (r.top - 10) + "px"; });
+  g.addEventListener("mousemove", (e) => {
+    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 250) + "px";
+    tip.style.top = (e.clientY - 12) + "px";
+  });
+  g.addEventListener("mouseleave", () => (tip.style.display = "none"));
+  g.addEventListener("blur", () => (tip.style.display = "none"));
+  const open = () => window.open(x.u, "_blank", "noopener");
+  g.addEventListener("click", open);
+  g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+});
+
+/* ---- table ---- */
+document.getElementById("rows").innerHTML = pairs.map((x) => `
+  <tr${x === best ? ' class="best-row"' : ""}>
+    <td>${fmtDate(x.d)}</td>
+    <td>${fmtDate(x.r)}</td>
+    <td class="price num">${fmtEUR(x.p)}${x === best ? ' <span class="chip">BEST</span>' : ""}</td>
+    <td>${x.a}</td>
+    <td class="num">${x.s}</td>
+    <td class="num">${fmtDur(x.m)}</td>
+    <td class="num" style="color:var(--muted)">—</td>
+    <td><a href="${x.u}" target="_blank" rel="noopener">Open ↗</a></td>
+  </tr>`).join("");
+</script>
