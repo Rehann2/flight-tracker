@@ -3,38 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Flight Tracker — CDG ⇄ BLR</title>
+<title>Flight Tracker</title>
 <style>
   :root {
-    --bg: #F2F5F8;
-    --panel: #FFFFFF;
-    --ink: #182430;
-    --muted: #5C6B7A;
-    --line: #D8E0E8;
-    --accent: #2F6DA0;
-    --bar: #6099CC;
-    --bar-best: #1A5A94;
-    --alert: #A8542F;
-    --good: #2E7D4F;
-    --chip: #E7EEF5;
-    --board: #14202C;
-    --board-ink: #E8EDF2;
-    --board-muted: #8FA3B5;
+    --bg: #F2F5F8; --panel: #FFFFFF; --ink: #182430; --muted: #5C6B7A;
+    --line: #D8E0E8; --accent: #2F6DA0; --bar: #6099CC; --bar-best: #1A5A94;
+    --alert: #A8542F; --good: #2E7D4F; --chip: #E7EEF5;
+    --board: #14202C; --board-ink: #E8EDF2; --board-muted: #8FA3B5;
     --shadow: rgba(10, 20, 30, 0.18);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #10161D; --panel: #171F29; --ink: #E8EDF2; --muted: #9AA8B6;
       --line: #2A3644; --accent: #7FB2DF; --bar: #5E93C4; --bar-best: #A9D2F5;
-      --alert: #D08054; --good: #6FBF8F; --chip: #22303E; --board: #0B1218;
-      --board-ink: #E8EDF2; --board-muted: #7E93A6; --shadow: rgba(0,0,0,0.5);
+      --alert: #D08054; --good: #6FBF8F; --chip: #22303E;
+      --board: #0B1218; --board-ink: #E8EDF2; --board-muted: #7E93A6;
+      --shadow: rgba(0,0,0,0.5);
     }
   }
   :root[data-theme="dark"] {
     --bg: #10161D; --panel: #171F29; --ink: #E8EDF2; --muted: #9AA8B6;
     --line: #2A3644; --accent: #7FB2DF; --bar: #5E93C4; --bar-best: #A9D2F5;
-    --alert: #D08054; --good: #6FBF8F; --chip: #22303E; --board: #0B1218;
-    --board-ink: #E8EDF2; --board-muted: #7E93A6; --shadow: rgba(0,0,0,0.5);
+    --alert: #D08054; --good: #6FBF8F; --chip: #22303E;
+    --board: #0B1218; --board-ink: #E8EDF2; --board-muted: #7E93A6;
+    --shadow: rgba(0,0,0,0.5);
   }
 
   * { box-sizing: border-box; }
@@ -42,34 +34,47 @@
          font: 15px/1.55 "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", sans-serif; }
   .mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace; }
   .num { font-variant-numeric: tabular-nums; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 20px 56px; display: flex; flex-direction: column; gap: 20px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 56px; display: flex; flex-direction: column; gap: 18px; }
   a { color: var(--accent); }
   button { font: inherit; }
 
-  .board { background: var(--board); color: var(--board-ink); border-radius: 10px; padding: 22px 26px 18px;
-           font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace; position: relative; }
-  .board .route { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding-right: 120px; }
-  .board .codes { font-size: 34px; font-weight: 700; letter-spacing: 0.06em; }
-  .board .cities { color: var(--board-muted); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
-  .board .specs { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; padding-top: 12px;
+  /* top bar + user tabs */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .topbar .title { font-family: ui-monospace, "SF Mono", Consolas, Menlo, monospace;
+                   font-weight: 700; letter-spacing: 0.12em; font-size: 15px; }
+  .topbar .scan { color: var(--muted); font-size: 12.5px; }
+  #edit-btn { background: var(--board); color: var(--board-ink); border: none; border-radius: 8px;
+              padding: 8px 15px; cursor: pointer; font-size: 12.5px; letter-spacing: 0.08em; }
+  #edit-btn:hover, #edit-btn:focus { outline: 2px solid var(--accent); }
+  .utabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .utab { font-family: ui-monospace, "SF Mono", Consolas, Menlo, monospace; letter-spacing: 0.12em;
+          text-transform: uppercase; font-size: 13px; padding: 8px 18px; border-radius: 999px;
+          border: 1.5px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; }
+  .utab.on { background: var(--board); color: var(--board-ink); border-color: var(--board); }
+  .utab:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* trip section */
+  .trip { display: flex; flex-direction: column; gap: 12px; }
+  .board { background: var(--board); color: var(--board-ink); border-radius: 10px; padding: 16px 22px 13px;
+           font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace; }
+  .board .route { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .board .codes { font-size: 25px; font-weight: 700; letter-spacing: 0.06em; }
+  .board .cities { color: var(--board-muted); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .board .specs { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; padding-top: 9px;
                   border-top: 1px solid rgba(143,163,181,0.25); }
-  .board .specs span { color: var(--board-muted); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .board .specs span { color: var(--board-muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
   .board .specs b { color: var(--board-ink); font-weight: 600; }
-  #edit-btn { position: absolute; top: 20px; right: 20px; background: transparent; color: var(--board-ink);
-              border: 1px solid rgba(143,163,181,0.5); border-radius: 8px; padding: 7px 14px; cursor: pointer;
-              font-size: 12.5px; letter-spacing: 0.08em; }
-  #edit-btn:hover, #edit-btn:focus { border-color: var(--board-ink); outline: none; }
 
   .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 12px; }
-  .tile .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-  .tile .value { font-size: 26px; font-weight: 700; margin-top: 2px; }
-  .tile .sub { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px 10px; }
+  .tile .label { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .tile .value { font-size: 23px; font-weight: 700; margin-top: 2px; }
+  .tile .sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .tile.best .value { color: var(--bar-best); }
 
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; }
-  .panel h2 { margin: 0 0 2px; font-size: 15.5px; }
-  .panel .hint { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
+  .panel h2 { margin: 0 0 2px; font-size: 15px; }
+  .panel .hint { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); }
 
   svg { width: 100%; height: auto; display: block; }
   .bar-hit { cursor: pointer; }
@@ -84,10 +89,10 @@
   #tip .tmuted { color: var(--muted); }
 
   .tablewrap { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; min-width: 640px; }
+  table { border-collapse: collapse; width: 100%; min-width: 700px; }
   th { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: left;
        font-weight: 600; padding: 6px 10px; border-bottom: 1px solid var(--line); }
-  td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
   tr:last-child td { border-bottom: none; }
   td.price { font-weight: 700; }
   tr.best-row td { background: var(--chip); }
@@ -97,10 +102,15 @@
   .delta-down { color: var(--good); font-weight: 600; }
   .delta-up { color: var(--alert); font-weight: 600; }
 
-  .empty { border: 1.5px dashed var(--line); border-radius: 10px; padding: 22px; color: var(--muted);
+  .empty { border: 1.5px dashed var(--line); border-radius: 10px; padding: 20px; color: var(--muted);
            font-size: 13.5px; text-align: center; }
+  .foot { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+  .banner { background: var(--chip); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px;
+            font-size: 13.5px; display: none; }
 
-  /* rescan progress */
+  .legend { display: flex; gap: 18px; margin-bottom: 8px; font-size: 12.5px; color: var(--muted); }
+  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 6px; }
+
   .progress { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
               padding: 12px 16px 14px; }
   .progress.on { display: block; }
@@ -112,38 +122,31 @@
   @media (prefers-reduced-motion: no-preference) { .prog-fill { transition: width 600ms linear; } }
   .progress.success .prog-fill { background: var(--good); }
   .progress.error .prog-fill { background: var(--alert); }
-  .foot { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
-  .banner { background: var(--chip); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px;
-            font-size: 13.5px; display: none; }
-
-  /* legend for history chart */
-  .legend { display: flex; gap: 18px; margin-bottom: 8px; font-size: 12.5px; color: var(--muted); }
-  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 6px; }
 
   /* Settings drawer */
   #overlay { position: fixed; inset: 0; background: var(--shadow); z-index: 40; display: none; }
-  #drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 94vw); background: var(--panel);
+  #drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(430px, 94vw); background: var(--panel);
             border-left: 1px solid var(--line); z-index: 50; display: none; flex-direction: column;
             box-shadow: -6px 0 24px var(--shadow); }
-  #drawer.open, #overlay.open { display: flex; }
+  #drawer.open { display: flex; }
   #overlay.open { display: block; }
-  #drawer header { padding: 18px 22px 12px; border-bottom: 1px solid var(--line);
+  #drawer header { padding: 16px 22px 12px; border-bottom: 1px solid var(--line);
                    display: flex; justify-content: space-between; align-items: center; }
   #drawer header h3 { margin: 0; font-size: 16px; }
-  #drawer .body { padding: 16px 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+  #drawer .body { padding: 16px 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 13px; }
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
   .field input, .field select { background: var(--bg); color: var(--ink); border: 1px solid var(--line);
-    border-radius: 7px; padding: 8px 10px; font: inherit; font-variant-numeric: tabular-nums; }
+    border-radius: 7px; padding: 8px 10px; font: inherit; font-variant-numeric: tabular-nums; width: 100%; }
   .field input:focus, .field select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  #drawer .actions { padding: 14px 22px 18px; border-top: 1px solid var(--line); display: flex; gap: 10px; }
-  .btn { border-radius: 8px; padding: 9px 16px; cursor: pointer; border: 1px solid var(--line);
+  #drawer .actions { padding: 13px 22px 16px; border-top: 1px solid var(--line); display: flex; gap: 9px; flex-wrap: wrap; }
+  .btn { border-radius: 8px; padding: 9px 15px; cursor: pointer; border: 1px solid var(--line);
          background: var(--panel); color: var(--ink); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  :root[data-theme="dark"] .btn.primary, .btn.primary { color: #FFFFFF; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #FFFFFF; }
+  .btn.danger { color: var(--alert); border-color: var(--alert); background: transparent; }
   .btn:disabled { opacity: 0.55; cursor: default; }
-  #save-status { font-size: 12.5px; min-height: 18px; padding: 0 22px 12px; color: var(--muted); }
+  #save-status { font-size: 12.5px; min-height: 18px; padding: 0 22px 10px; color: var(--muted); }
   details.tok { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
   details.tok summary { cursor: pointer; font-weight: 600; }
   details.tok ol { margin: 8px 0 4px; padding-left: 18px; }
@@ -152,16 +155,13 @@
 
   @media (max-width: 720px) {
     .tiles { grid-template-columns: 1fr 1fr; }
-    .board .codes { font-size: 26px; }
-    .board .route { padding-right: 0; }
-    #edit-btn { position: static; margin-top: 10px; }
+    .board .codes { font-size: 21px; }
   }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-
   <div class="banner" id="banner"></div>
 
   <div class="progress" id="prog" role="status" aria-live="polite">
@@ -169,81 +169,47 @@
     <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
   </div>
 
-  <header class="board">
-    <div class="route">
-      <span class="codes" id="codes">— ⇄ —</span>
-      <span class="cities" id="cities">loading…</span>
-    </div>
-    <button id="edit-btn">⚙ EDIT FILTERS</button>
-    <div class="specs" id="specs"></div>
-  </header>
+  <div class="topbar">
+    <span class="title">✈ FLIGHT TRACKER</span>
+    <span class="scan" id="scanned"></span>
+    <button id="edit-btn">⚙ MANAGE TRIPS</button>
+  </div>
 
-  <section class="tiles">
-    <div class="tile best">
-      <div class="label">Best price</div>
-      <div class="value num" id="kpi-best">—</div>
-      <div class="sub" id="kpi-best-sub"></div>
-    </div>
-    <div class="tile">
-      <div class="label">Average of date minimums</div>
-      <div class="value num" id="kpi-avg">—</div>
-      <div class="sub" id="kpi-avg-sub"></div>
-    </div>
-    <div class="tile">
-      <div class="label">Within budget</div>
-      <div class="value num" id="kpi-budget">—</div>
-      <div class="sub" id="kpi-budget-sub"></div>
-    </div>
-    <div class="tile">
-      <div class="label">Cheapest carrier</div>
-      <div class="value" id="kpi-carrier" style="font-size:19px; padding-top:5px;">—</div>
-      <div class="sub" id="kpi-carrier-sub"></div>
-    </div>
-  </section>
+  <nav class="utabs" id="utabs" aria-label="Users"></nav>
 
-  <section class="panel">
-    <h2>Cheapest round trip by departure day</h2>
-    <p class="hint">Each bar is the lowest qualifying fare for that departure date. Click a bar to open the live Google Flights page.</p>
-    <div id="chart"></div>
-  </section>
-
-  <section class="panel">
-    <h2>Price history</h2>
-    <p class="hint">Best fare and average of date minimums, one point per daily scan.</p>
-    <div id="history"></div>
-  </section>
-
-  <section class="panel">
-    <h2>All tracked dates</h2>
-    <p class="hint">Δ day compares against the previous scan.</p>
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr><th>Depart</th><th>Return</th><th>Price</th><th>Carrier</th><th>Stops</th><th>Via</th><th>Outbound</th><th>Δ day</th><th></th></tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-  </section>
+  <main id="trips"></main>
 
   <p class="foot">
     Data collected daily around 08:00 Paris by
     <a href="https://github.com/Rehann2/flight-tracker/actions">GitHub Actions</a> ·
+    each user gets their own daily email for their own trips ·
     prices are session-indicative (± a few %); the linked Google Flights page shows the live bookable fare ·
     <a href="https://github.com/Rehann2/flight-tracker">source</a>
   </p>
-
 </div>
 
 <div id="tip" role="status"></div>
 
 <div id="overlay"></div>
-<aside id="drawer" aria-label="Edit filters">
+<aside id="drawer" aria-label="Manage trips">
   <header>
-    <h3>Filters</h3>
+    <h3>Manage trips</h3>
     <button class="close-x" id="drawer-close" aria-label="Close">✕</button>
   </header>
   <div class="body">
+    <div class="grid2">
+      <div class="field"><label for="f-user">User</label>
+        <select id="f-user"></select>
+      </div>
+      <div class="field"><label for="f-trip">Trip</label>
+        <select id="f-trip"></select>
+      </div>
+    </div>
+    <div class="field" id="newuser-row" style="display:none">
+      <label for="f-newuser">New user name</label>
+      <input id="f-newuser" placeholder="e.g. khush" maxlength="20">
+    </div>
+    <div class="field"><label for="f-name">Trip name</label><input id="f-name" placeholder="e.g. BLR winter"></div>
     <div class="grid2">
       <div class="field"><label for="f-origin">Origin</label><input id="f-origin" maxlength="3"></div>
       <div class="field"><label for="f-dest">Destination</label><input id="f-dest" maxlength="3"></div>
@@ -269,21 +235,23 @@
         Avoid Middle East layovers
       </label>
     </div>
-    <div class="field"><label for="f-cabin">Cabin</label>
-      <select id="f-cabin">
-        <option value="economy">Economy</option><option value="premium-economy">Premium economy</option>
-        <option value="business">Business</option><option value="first">First</option>
-      </select>
+    <div class="grid2">
+      <div class="field"><label for="f-cabin">Cabin</label>
+        <select id="f-cabin">
+          <option value="economy">Economy</option><option value="premium-economy">Premium economy</option>
+          <option value="business">Business</option><option value="first">First</option>
+        </select>
+      </div>
+      <div class="field"><label for="f-adults">Adults</label><input id="f-adults" type="number" min="1" max="9" value="1"></div>
     </div>
     <p id="matrix-note" style="font-size:12.5px; color:var(--muted); margin:0;"></p>
 
     <div class="field">
-      <label for="f-emails">Daily email updates — recipients (comma-separated)</label>
-      <input id="f-emails" type="text" placeholder="you@example.com, friend@example.com">
+      <label for="f-emails">Daily email for <span id="email-user">this user</span> (comma-separated)</label>
+      <input id="f-emails" type="text" placeholder="you@example.com">
     </div>
     <p style="font-size:12px; color:var(--muted); margin:-6px 0 0;">
-      Stored as a private repo variable — never visible in the public repo.
-      Sending also needs the SMTP secrets (one-time, see repo settings).
+      Each user's email gets a digest covering only their trips. Stored privately — never in the public repo.
     </p>
 
     <details class="tok" id="tok-details">
@@ -301,6 +269,7 @@
   <div class="actions">
     <button class="btn primary" id="btn-save">Save</button>
     <button class="btn" id="btn-save-run">Save &amp; rescan now</button>
+    <button class="btn danger" id="btn-delete">Delete trip</button>
   </div>
 </aside>
 
@@ -309,38 +278,31 @@ const OWNER = "Rehann2", REPO = "flight-tracker";
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fmtEUR = (v) => "€" + v.toLocaleString("en-IE");
 const fmtDate = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 const fmtDur = (m) => Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0");
-
-let LATEST = null, HISTORY = [], CONFIG_TEXT = "", LAST_LOAD = 0, RESCANNING = false;
-
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const b64ToText = (b) => decodeURIComponent(escape(atob(b.replace(/\n/g, ""))));
+
+let LATEST = null, HISTORY = [], EMAIL_MAP = {}, LAST_LOAD = 0, RESCANNING = false;
+let ACTIVE_USER = localStorage.getItem("ft_user") || "";
+
 const parseHistory = (text) => text.trim().split("\n").slice(1).filter(Boolean).map((l) => {
   const p = l.split(",");
-  return { run_date: p[0], depart: p[1], ret: p[2], min_price: +p[3], route: p[4] || "", trip: p[5] || "" };
+  return { run_date: p[0], trip_id: p[1], depart: p[2], ret: p[3], min_price: +p[4] };
 });
-// history rows from other route/trip-length configs aren't comparable — hide them
-const histForCurrent = () => {
-  if (!LATEST) return HISTORY;
-  const route = LATEST.route.origin + "-" + LATEST.route.destination;
-  const trip = String(LATEST.trip.trip_days);
-  return HISTORY.filter((h) => !h.route || (h.route === route && h.trip === trip));
-};
 
-/* ---------- data loading ---------- */
 async function loadAll() {
   try {
     const bust = "?t=" + Date.now();
-    const [lj, hc, cy] = await Promise.all([
+    const [lj, hc] = await Promise.all([
       fetch("data/latest.json" + bust).then((r) => { if (!r.ok) throw new Error("latest.json " + r.status); return r.json(); }),
       fetch("data/history.csv" + bust).then((r) => (r.ok ? r.text() : "")),
-      fetch("config.yaml" + bust).then((r) => (r.ok ? r.text() : "")),
     ]);
     LATEST = lj;
     HISTORY = parseHistory(hc);
-    CONFIG_TEXT = cy;
     LAST_LOAD = Date.now();
     render();
   } catch (e) {
@@ -351,62 +313,118 @@ async function loadAll() {
 }
 
 /* ---------- rendering ---------- */
+const users = () => [...new Set(LATEST.trips.map((t) => t.config.user))];
+
 function render() {
-  const cfg = LATEST;
-  const pairs = cfg.pairs.filter((p) => p.min_price != null);
-  const budget = cfg.filters.budget_eur;
+  const scannedAt = LATEST.generated_at
+    ? fmtDate(LATEST.run_date) + ", " + new Date(LATEST.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : fmtDate(LATEST.run_date);
+  $("scanned").textContent = "scanned " + scannedAt;
 
-  $("codes").textContent = cfg.route.origin + " ⇄ " + cfg.route.destination;
-  const scannedAt = cfg.generated_at
-    ? fmtDate(cfg.run_date) + ", " + new Date(cfg.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    : fmtDate(cfg.run_date);
-  $("cities").textContent = "round trip · scanned " + scannedAt;
-  $("specs").innerHTML =
-    `<span>Trip <b>${cfg.trip.trip_days} days</b></span>
-     <span>Window <b>${fmtDate(String(cfg.trip.window_start))} → ${fmtDate(String(cfg.trip.window_end))}</b></span>
-     <span>Cabin <b>${cfg.filters.cabin}</b></span>
-     <span>Stops <b>≤ ${cfg.filters.max_stops}</b></span>
-     <span>Outbound <b>≤ ${cfg.filters.max_duration_hours} h</b></span>
-     <span>Budget <b>€${budget}</b></span>` +
-    ((cfg.filters.avoid_layovers || []).length
-      ? `<span>Avoiding <b>${cfg.filters.avoid_layovers.join(", ")}</b></span>` : "");
+  const us = users();
+  if (!us.includes(ACTIVE_USER)) ACTIVE_USER = us[0] || "";
+  $("utabs").innerHTML = us.map((u) =>
+    `<button class="utab${u === ACTIVE_USER ? " on" : ""}" data-user="${esc(u)}">${esc(u)}</button>`).join("");
+  $("utabs").querySelectorAll(".utab").forEach((b) => b.addEventListener("click", () => {
+    ACTIVE_USER = b.dataset.user;
+    localStorage.setItem("ft_user", ACTIVE_USER);
+    render();
+  }));
 
-  const best = pairs.reduce((a, b) => (b.min_price < a.min_price ? b : a));
-  const avg = Math.round(pairs.reduce((s, x) => s + x.min_price, 0) / pairs.length);
-  const under = pairs.filter((x) => x.min_price <= budget).length;
-  const carriers = [...new Set(pairs.map((x) => x.top[0] && x.top[0].airline).filter(Boolean))];
-
-  $("kpi-best").textContent = fmtEUR(best.min_price);
-  $("kpi-best-sub").textContent = fmtDate(best.depart) + " → " + fmtDate(best["return"]) + (best.top[0] ? " · " + best.top[0].airline : "");
-  $("kpi-avg").textContent = fmtEUR(avg);
-  $("kpi-avg-sub").textContent = "across " + pairs.length + " departure dates";
-  $("kpi-budget").textContent = under + "/" + pairs.length;
-  $("kpi-budget-sub").textContent = "departure dates under €" + budget;
-  $("kpi-carrier").textContent = carriers.length ? carriers.join(", ") : "—";
-  $("kpi-carrier-sub").textContent = carriers.length === 1 ? "cheapest on all " + pairs.length + " dates" : "by departure date";
-
-  drawBars(pairs, best, budget);
-  drawHistory();
-  drawTable(pairs, best);
-  fillForm();
+  const mine = LATEST.trips.filter((t) => t.config.user === ACTIVE_USER);
+  $("trips").innerHTML = mine.length
+    ? mine.map(tripHTML).join("")
+    : `<div class="empty">No trips for this user yet — open <b>⚙ Manage trips</b> to add one.</div>`;
+  mine.forEach(bindTrip);
 }
 
-function drawBars(pairs, best, budget) {
-  const W = 920, H = 330, L = 52, R = 12, T = 26, B = 40;
+function tripHTML(trip, idx) {
+  const c = trip.config;
+  const pairs = trip.pairs.filter((p) => p.min_price != null);
+  if (!pairs.length) {
+    return `<section class="trip"><div class="board"><div class="route">
+      <span class="codes">${esc(c.origin)} ⇄ ${esc(c.destination)}</span>
+      <span class="cities">${esc(c.name)}</span></div></div>
+      <div class="empty">No prices collected yet for this trip — they arrive with the next scan.</div></section>`;
+  }
+  const best = pairs.reduce((a, b) => (b.min_price < a.min_price ? b : a));
+  const avg = Math.round(pairs.reduce((s, x) => s + x.min_price, 0) / pairs.length);
+  const under = pairs.filter((x) => x.min_price <= c.budget_eur).length;
+  const carriers = [...new Set(pairs.map((x) => x.top[0] && x.top[0].airline).filter(Boolean))];
+  const avoid = (c.avoid_layovers || []).length
+    ? `<span>Avoiding <b>${esc(c.avoid_layovers.join(", "))}</b></span>` : "";
+  return `<section class="trip" data-idx="${idx}">
+    <div class="board">
+      <div class="route">
+        <span class="codes">${esc(c.origin)} ⇄ ${esc(c.destination)}</span>
+        <span class="cities">${esc(c.name)} · round trip</span>
+      </div>
+      <div class="specs">
+        <span>Trip <b>${c.trip_days} days</b></span>
+        <span>Window <b>${fmtDate(String(c.window_start))} → ${fmtDate(String(c.window_end))}</b></span>
+        <span>Cabin <b>${esc(c.cabin)}</b></span>
+        <span>Stops <b>≤ ${c.max_stops}</b></span>
+        <span>Outbound <b>≤ ${c.max_duration_hours} h</b></span>
+        <span>Budget <b>€${c.budget_eur}</b></span>
+        ${avoid}
+      </div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><div class="label">Best price</div>
+        <div class="value num">${fmtEUR(best.min_price)}</div>
+        <div class="sub">${fmtDate(best.depart)} → ${fmtDate(best["return"])}${best.top[0] ? " · " + esc(best.top[0].airline) : ""}</div></div>
+      <div class="tile"><div class="label">Average of date minimums</div>
+        <div class="value num">${fmtEUR(avg)}</div>
+        <div class="sub">across ${pairs.length} departure dates</div></div>
+      <div class="tile"><div class="label">Within budget</div>
+        <div class="value num">${under}/${pairs.length}</div>
+        <div class="sub">dates under €${c.budget_eur}</div></div>
+      <div class="tile"><div class="label">Cheapest carrier</div>
+        <div class="value" style="font-size:18px; padding-top:5px;">${esc(carriers.join(", ") || "—")}</div>
+        <div class="sub">${carriers.length === 1 ? "cheapest on all dates" : "by departure date"}</div></div>
+    </div>
+    <div class="panel"><h2>Cheapest round trip by departure day</h2>
+      <p class="hint">Click a bar to open the live Google Flights page.</p>
+      <div class="barchart"></div></div>
+    <div class="panel"><h2>Price history</h2>
+      <p class="hint">Best fare and average of date minimums, one point per scan of this trip.</p>
+      <div class="histchart"></div></div>
+    <div class="panel"><h2>All tracked dates</h2>
+      <p class="hint">Δ day compares against this trip's previous scan.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Depart</th><th>Return</th><th>Price</th><th>Carrier</th><th>Stops</th><th>Via</th><th>Outbound</th><th>Δ day</th><th></th></tr></thead>
+        <tbody class="rows"></tbody>
+      </table></div></div>
+  </section>`;
+}
+
+function bindTrip(trip) {
+  const root = [...document.querySelectorAll(".trip")].find(
+    (el) => el.querySelector(".cities") && el.querySelector(".cities").textContent.startsWith(trip.config.name));
+  if (!root) return;
+  const pairs = trip.pairs.filter((p) => p.min_price != null);
+  if (!pairs.length) return;
+  const best = pairs.reduce((a, b) => (b.min_price < a.min_price ? b : a));
+  drawBars(root.querySelector(".barchart"), trip, pairs, best);
+  drawHistory(root.querySelector(".histchart"), trip);
+  drawTable(root.querySelector(".rows"), trip, pairs, best);
+}
+
+function drawBars(el, trip, pairs, best) {
+  const budget = trip.config.budget_eur;
+  const W = 920, H = 320, L = 52, R = 12, T = 26, B = 40;
   const plotW = W - L - R, plotH = H - T - B;
   const MAX = Math.max(950, budget + 50, ...pairs.map((p) => p.min_price + 60));
   const y = (v) => T + plotH - (v / MAX) * plotH;
   const step = plotW / pairs.length, barW = Math.min(40, step * 0.52);
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cheapest round trip per departure day">`;
-  const gridVals = [250, 500, 750].filter((g) => g < MAX);
-  gridVals.forEach((g) => {
+  [250, 500, 750].filter((g) => g < MAX).forEach((g) => {
     svg += `<line x1="${L}" y1="${y(g)}" x2="${W - R}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/>
       <text x="${L - 8}" y="${y(g) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" class="num">€${g}</text>`;
   });
   svg += `<line x1="${L}" y1="${y(budget)}" x2="${W - R}" y2="${y(budget)}" stroke="var(--alert)" stroke-width="1.5" stroke-dasharray="5 4"/>
     <text x="${W - R}" y="${y(budget) - 6}" text-anchor="end" font-size="11" fill="var(--alert)">budget €${budget}</text>`;
-
   pairs.forEach((x, i) => {
     const cx = L + step * i + step / 2, x0 = cx - barW / 2, yT = y(x.min_price), base = T + plotH, rr = 4;
     const fill = x === best ? "var(--bar-best)" : x.min_price > budget ? "var(--alert)" : "var(--bar)";
@@ -422,16 +440,16 @@ function drawBars(pairs, best, budget) {
   });
   svg += `<line x1="${L}" y1="${T + plotH}" x2="${W - R}" y2="${T + plotH}" stroke="var(--line)" stroke-width="1.5"/>
     <text x="${L + plotW / 2}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--muted)" letter-spacing="1.5">DEPARTURE DAY</text></svg>`;
-  $("chart").innerHTML = svg;
+  el.innerHTML = svg;
 
   const tip = $("tip");
-  document.querySelectorAll(".bar-hit").forEach((g) => {
+  el.querySelectorAll(".bar-hit").forEach((g) => {
     const x = pairs[+g.dataset.i];
     const t0 = x.top[0] || {};
     const show = () => {
       tip.innerHTML = `<span class="tprice num">${fmtEUR(x.min_price)}</span> <span class="tmuted">round trip</span><br>
         ${fmtDate(x.depart)} → ${fmtDate(x["return"])}<br>
-        <span class="tmuted">${t0.airline || ""}${t0.stops != null ? " · " + t0.stops + " stop" : ""}${t0.via && t0.via.length ? " via " + t0.via.join("/") : ""}${t0.duration_min ? " · " + fmtDur(t0.duration_min) + " out" : ""}</span><br>
+        <span class="tmuted">${esc(t0.airline || "")}${t0.stops != null ? " · " + t0.stops + " stop" : ""}${t0.via && t0.via.length ? " via " + esc(t0.via.join("/")) : ""}${t0.duration_min ? " · " + fmtDur(t0.duration_min) + " out" : ""}</span><br>
         <span class="tmuted">click for live prices ↗</span>`;
       tip.style.display = "block";
     };
@@ -449,30 +467,27 @@ function drawBars(pairs, best, budget) {
   });
 }
 
-function drawHistory() {
-  const hist = histForCurrent();
-  const hiddenNote = hist.length < HISTORY.length
-    ? `<p class="hint" style="margin:10px 0 0">Scans made with a different route or trip length are hidden from this chart.</p>` : "";
+function drawHistory(el, trip) {
+  const hist = HISTORY.filter((h) => h.trip_id === trip.id);
   const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   if (runs.length < 2) {
-    $("history").innerHTML = `<div class="empty"><b>History builds from the second scan with these settings.</b><br>
-      Each morning adds one point — this chart will show whether the market is rising or falling.</div>` + hiddenNote;
+    el.innerHTML = `<div class="empty"><b>History builds from this trip's second scan.</b><br>
+      Each scan adds one point — the chart shows whether the market is rising or falling.</div>`;
     return;
   }
   const series = runs.map((rd) => {
     const prices = hist.filter((h) => h.run_date === rd).map((h) => h.min_price);
     return { rd, best: Math.min(...prices), avg: Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) };
   });
-  const W = 920, H = 260, L = 52, R = 16, T = 18, B = 34;
+  const W = 920, H = 250, L = 52, R = 16, T = 18, B = 34;
   const plotW = W - L - R, plotH = H - T - B;
   const vals = series.flatMap((s) => [s.best, s.avg]);
   const lo = Math.floor((Math.min(...vals) - 30) / 50) * 50, hi = Math.ceil((Math.max(...vals) + 30) / 50) * 50;
   const x = (i) => L + (runs.length === 1 ? plotW / 2 : (i / (runs.length - 1)) * plotW);
   const y = (v) => T + plotH - ((v - lo) / (hi - lo)) * plotH;
-
   const path = (key) => series.map((s, i) => (i ? "L" : "M") + x(i) + "," + y(s[key])).join(" ");
   let svg = `<div class="legend"><span><i style="background:var(--bar-best)"></i>Best fare</span><span><i style="background:var(--bar)"></i>Average of minimums</span></div>
-  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price history: best fare and average of date minimums per scan">`;
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price history for this trip">`;
   for (let g = lo; g <= hi; g += 50) {
     svg += `<line x1="${L}" y1="${y(g)}" x2="${W - R}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/>
       <text x="${L - 8}" y="${y(g) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" class="num">€${g}</text>`;
@@ -490,18 +505,16 @@ function drawHistory() {
       svg += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="var(--muted)" class="num">${fmtDate(rd)}</text>`;
     }
   });
-  svg += `</svg>`;
-  $("history").innerHTML = svg + hiddenNote;
+  el.innerHTML = svg + `</svg>`;
 }
 
-function drawTable(pairs, best) {
-  const hist = histForCurrent();
+function drawTable(el, trip, pairs, best) {
+  const hist = HISTORY.filter((h) => h.trip_id === trip.id);
   const runs = [...new Set(hist.map((h) => h.run_date))].sort();
   const prevRun = runs.length >= 2 ? runs[runs.length - 2] : null;
   const prev = {};
   if (prevRun) hist.filter((h) => h.run_date === prevRun).forEach((h) => (prev[h.depart] = h.min_price));
-
-  $("rows").innerHTML = pairs.map((x) => {
+  el.innerHTML = pairs.map((x) => {
     const t0 = x.top[0] || {};
     let delta = '<span style="color:var(--muted)">—</span>';
     if (prev[x.depart] != null) {
@@ -513,9 +526,9 @@ function drawTable(pairs, best) {
       <td>${fmtDate(x.depart)}</td>
       <td>${fmtDate(x["return"])}</td>
       <td class="price num">${fmtEUR(x.min_price)}${x === best ? ' <span class="chip">BEST</span>' : ""}</td>
-      <td>${t0.airline || "—"}</td>
+      <td>${esc(t0.airline || "—")}</td>
       <td class="num">${t0.stops != null ? t0.stops : "—"}</td>
-      <td>${t0.via && t0.via.length ? t0.via.join(", ") : (t0.stops === 0 ? "nonstop" : "—")}</td>
+      <td>${t0.via && t0.via.length ? esc(t0.via.join(", ")) : (t0.stops === 0 ? "nonstop" : "—")}</td>
       <td class="num">${t0.duration_min ? fmtDur(t0.duration_min) : "—"}</td>
       <td class="num">${delta}</td>
       <td><a href="${x.url}" target="_blank" rel="noopener">Open ↗</a></td>
@@ -523,72 +536,7 @@ function drawTable(pairs, best) {
   }).join("");
 }
 
-/* ---------- settings drawer ---------- */
-const yamlGet = (key) => {
-  const m = CONFIG_TEXT.match(new RegExp("^(\\s*" + key + ":\\s*)([^\\s#]+)", "m"));
-  return m ? m[2] : "";
-};
-const yamlSet = (text, key, val) =>
-  text.replace(new RegExp("^(\\s*" + key + ":\\s*)([^\\s#]+)", "m"), (_, p1) => p1 + val);
-const yamlGetList = (key) => {
-  const m = CONFIG_TEXT.match(new RegExp("^\\s*" + key + ":\\s*\\[([^\\]]*)\\]", "m"));
-  return m ? m[1].split(",").map((s) => s.trim()).filter(Boolean) : [];
-};
-const yamlSetList = (text, key, arr) =>
-  text.replace(new RegExp("^(\\s*" + key + ":\\s*)\\[[^\\]]*\\]", "m"), (_, p1) => p1 + "[" + arr.join(", ") + "]");
-
-function fillForm() {
-  $("f-origin").value = yamlGet("origin");
-  $("f-dest").value = yamlGet("destination");
-  $("f-start").value = yamlGet("window_start");
-  $("f-end").value = yamlGet("window_end");
-  $("f-days").value = yamlGet("trip_days");
-  $("f-budget").value = yamlGet("budget_eur");
-  $("f-stops").value = yamlGet("max_stops");
-  $("f-hours").value = yamlGet("max_duration_hours");
-  $("f-cabin").value = yamlGet("cabin");
-  $("f-avoid-me").checked = yamlGetList("avoid_layovers").some((v) => v.toLowerCase() === "middle-east");
-  $("f-token").value = localStorage.getItem("ft_token") || "";
-  if (!localStorage.getItem("ft_token")) $("tok-details").open = true;
-  updateMatrixNote();
-  loadEmails();
-}
-
-function updateMatrixNote() {
-  const s = new Date($("f-start").value), e = new Date($("f-end").value), d = +$("f-days").value;
-  if (isNaN(s) || isNaN(e) || !d) { $("matrix-note").textContent = ""; return; }
-  const n = Math.floor((e - s) / 86400000) - d + 1;
-  $("matrix-note").textContent = n > 0
-    ? n + " departure dates will be scanned daily."
-    : "⚠ Window too small for the trip length — zero departure dates.";
-}
-["f-start", "f-end", "f-days"].forEach((id) => $(id).addEventListener("input", updateMatrixNote));
-
-const drawer = $("drawer"), overlay = $("overlay");
-const openDrawer = () => { drawer.classList.add("open"); overlay.classList.add("open"); };
-const closeDrawer = () => { drawer.classList.remove("open"); overlay.classList.remove("open"); };
-$("edit-btn").addEventListener("click", openDrawer);
-$("drawer-close").addEventListener("click", closeDrawer);
-overlay.addEventListener("click", closeDrawer);
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
-
-function buildNewConfig() {
-  let t = CONFIG_TEXT;
-  t = yamlSet(t, "origin", $("f-origin").value.trim().toUpperCase());
-  t = yamlSet(t, "destination", $("f-dest").value.trim().toUpperCase());
-  t = yamlSet(t, "window_start", $("f-start").value);
-  t = yamlSet(t, "window_end", $("f-end").value);
-  t = yamlSet(t, "trip_days", $("f-days").value);
-  t = yamlSet(t, "budget_eur", $("f-budget").value);
-  t = yamlSet(t, "max_stops", $("f-stops").value);
-  t = yamlSet(t, "max_duration_hours", $("f-hours").value);
-  t = yamlSet(t, "cabin", $("f-cabin").value);
-  const avoid = yamlGetList("avoid_layovers").filter((v) => v.toLowerCase() !== "middle-east");
-  if ($("f-avoid-me").checked) avoid.unshift("middle-east");
-  t = yamlSetList(t, "avoid_layovers", avoid);
-  return t;
-}
-
+/* ---------- GitHub API ---------- */
 async function gh(path, opts = {}) {
   const token = $("f-token").value.trim();
   const r = await fetch(API + path, {
@@ -608,30 +556,169 @@ async function gh(path, opts = {}) {
   return txt ? JSON.parse(txt) : null;
 }
 
-let EMAILS_ORIG = "";
+/* ---------- drawer ---------- */
+const NEW = "__new__";
+const drawer = $("drawer"), overlay = $("overlay");
+const openDrawer = () => { drawer.classList.add("open"); overlay.classList.add("open"); fillUserSelect(); };
+const closeDrawer = () => { drawer.classList.remove("open"); overlay.classList.remove("open"); };
+$("edit-btn").addEventListener("click", openDrawer);
+$("drawer-close").addEventListener("click", closeDrawer);
+overlay.addEventListener("click", closeDrawer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+
+function fillUserSelect() {
+  const us = users();
+  $("f-user").innerHTML = us.map((u) => `<option value="${esc(u)}"${u === ACTIVE_USER ? " selected" : ""}>${esc(u)}</option>`).join("")
+    + `<option value="${NEW}">+ new user…</option>`;
+  onUserChange();
+  $("f-token").value = localStorage.getItem("ft_token") || "";
+  if (!localStorage.getItem("ft_token")) $("tok-details").open = true;
+  loadEmails();
+}
+
+function selectedUser() {
+  const v = $("f-user").value;
+  return v === NEW ? slug($("f-newuser").value || "") : v;
+}
+
+function onUserChange() {
+  const isNew = $("f-user").value === NEW;
+  $("newuser-row").style.display = isNew ? "" : "none";
+  const mine = isNew ? [] : LATEST.trips.filter((t) => t.config.user === $("f-user").value);
+  $("f-trip").innerHTML = mine.map((t, i) =>
+    `<option value="${esc(t.id)}">${esc(t.config.name)}</option>`).join("") + `<option value="${NEW}">+ new trip…</option>`;
+  $("email-user").textContent = isNew ? "new user" : $("f-user").value;
+  onTripChange();
+  syncEmailField();
+}
+function onTripChange() {
+  const t = LATEST.trips.find((x) => x.id === $("f-trip").value);
+  const c = t ? t.config : {
+    name: "", origin: "", destination: "", window_start: "", window_end: "",
+    trip_days: 30, budget_eur: 800, max_stops: 1, max_duration_hours: 16,
+    avoid_layovers: [], cabin: "economy", adults: 1,
+  };
+  $("f-name").value = c.name;
+  $("f-origin").value = c.origin;
+  $("f-dest").value = c.destination;
+  $("f-start").value = String(c.window_start);
+  $("f-end").value = String(c.window_end);
+  $("f-days").value = c.trip_days;
+  $("f-budget").value = c.budget_eur;
+  $("f-stops").value = c.max_stops;
+  $("f-hours").value = c.max_duration_hours;
+  $("f-avoid-me").checked = (c.avoid_layovers || []).some((v) => String(v).toLowerCase() === "middle-east");
+  $("f-cabin").value = c.cabin;
+  $("f-adults").value = c.adults;
+  $("btn-delete").style.display = t ? "" : "none";
+  updateMatrixNote();
+}
+$("f-user").addEventListener("change", onUserChange);
+$("f-trip").addEventListener("change", onTripChange);
+$("f-newuser").addEventListener("input", () => { $("email-user").textContent = selectedUser() || "new user"; syncEmailField(); });
+
+function updateMatrixNote() {
+  const s = new Date($("f-start").value), e = new Date($("f-end").value), d = +$("f-days").value;
+  if (isNaN(s) || isNaN(e) || !d) { $("matrix-note").textContent = ""; return; }
+  const n = Math.floor((e - s) / 86400000) - d + 1;
+  $("matrix-note").textContent = n > 0
+    ? n + " departure dates will be scanned daily for this trip."
+    : "⚠ Window too small for the trip length — zero departure dates.";
+}
+["f-start", "f-end", "f-days"].forEach((id) => $(id).addEventListener("input", updateMatrixNote));
+
+/* per-user emails, stored in the DIGEST_TO repo variable as a JSON map */
 async function loadEmails() {
   if (!$("f-token").value.trim()) return;
   try {
     const v = await gh("/actions/variables/DIGEST_TO");
-    EMAILS_ORIG = v && v.value ? v.value : "";
-    $("f-emails").value = EMAILS_ORIG;
-  } catch (e) { EMAILS_ORIG = ""; }
+    try { EMAIL_MAP = JSON.parse(v.value); } catch (e) { EMAIL_MAP = { [users()[0] || "rehan"]: v.value }; }
+  } catch (e) { EMAIL_MAP = {}; }
+  syncEmailField();
+}
+function syncEmailField() {
+  $("f-emails").value = EMAIL_MAP[selectedUser()] || "";
+}
+
+function tripFileText(existing) {
+  const avoid = [];
+  if ($("f-avoid-me").checked) avoid.push("middle-east");
+  (existingAvoidExtras(existing)).forEach((c) => avoid.push(c));
+  const fields = {
+    user: selectedUser(),
+    name: $("f-name").value.trim(),
+    origin: $("f-origin").value.trim().toUpperCase(),
+    destination: $("f-dest").value.trim().toUpperCase(),
+    window_start: $("f-start").value,
+    window_end: $("f-end").value,
+    trip_days: $("f-days").value,
+    budget_eur: $("f-budget").value,
+    max_stops: $("f-stops").value,
+    max_duration_hours: $("f-hours").value,
+    avoid_layovers: "[" + avoid.join(", ") + "]",
+    cabin: $("f-cabin").value,
+    adults: $("f-adults").value,
+    alert_threshold_pct: existing ? null : 3,
+  };
+  if (existing) {
+    let t = existing;
+    for (const [k, v] of Object.entries(fields)) {
+      if (v === null) continue;
+      t = t.replace(new RegExp("^(\\s*" + k + ":\\s*).*$", "m"), (_, p1) => p1 + v);
+    }
+    return t;
+  }
+  return `# One tracked trip. All fields editable here or from the dashboard drawer.
+user: ${fields.user}
+name: ${fields.name}
+origin: ${fields.origin}
+destination: ${fields.destination}
+window_start: ${fields.window_start}
+window_end: ${fields.window_end}
+trip_days: ${fields.trip_days}
+budget_eur: ${fields.budget_eur}
+max_stops: ${fields.max_stops}
+max_duration_hours: ${fields.max_duration_hours}
+avoid_layovers: ${fields.avoid_layovers}
+cabin: ${fields.cabin}
+adults: ${fields.adults}
+alert_threshold_pct: 3
+`;
+}
+function existingAvoidExtras(existing) {
+  if (!existing) return [];
+  const m = existing.match(/^\s*avoid_layovers:\s*\[([^\]]*)\]/m);
+  if (!m) return [];
+  return m[1].split(",").map((s) => s.trim()).filter((s) => s && s.toLowerCase() !== "middle-east");
+}
+
+function validate() {
+  const u = selectedUser();
+  if (!u) return "Give the new user a name.";
+  if (!$("f-name").value.trim()) return "Give the trip a name.";
+  if (!/^[A-Z]{3}$/i.test($("f-origin").value.trim()) || !/^[A-Z]{3}$/i.test($("f-dest").value.trim()))
+    return "Origin and destination must be 3-letter airport codes.";
+  if (!$("f-start").value || !$("f-end").value) return "Set the date window.";
+  const emails = $("f-emails").value.trim();
+  const bad = emails ? emails.split(",").map((s) => s.trim()).filter((s) => s && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) : [];
+  if (bad.length) return "Invalid email: " + bad.join(", ");
+  return null;
 }
 
 async function saveEmails(status) {
+  const u = selectedUser();
   const emails = $("f-emails").value.trim();
-  if (emails === EMAILS_ORIG) return false;
-  const bad = emails.split(",").map((s) => s.trim()).filter((s) => s && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s));
-  if (bad.length) throw new Error("invalid email: " + bad.join(", "));
-  status.textContent = "Saving recipients…";
-  const body = JSON.stringify({ name: "DIGEST_TO", value: emails });
+  if ((EMAIL_MAP[u] || "") === emails) return false;
+  status.textContent = "Saving email…";
+  EMAIL_MAP[u] = emails;
+  if (!emails) delete EMAIL_MAP[u];
+  const body = JSON.stringify({ name: "DIGEST_TO", value: JSON.stringify(EMAIL_MAP) });
   try {
     await gh("/actions/variables/DIGEST_TO", { method: "PATCH", body });
   } catch (e) {
     if (String(e.message).startsWith("404")) await gh("/actions/variables", { method: "POST", body });
     else throw e;
   }
-  EMAILS_ORIG = emails;
   return true;
 }
 
@@ -639,27 +726,35 @@ async function save(rescan) {
   const status = $("save-status");
   const token = $("f-token").value.trim();
   if (!token) { status.textContent = "Add your GitHub token first (see token setup above)."; $("tok-details").open = true; return; }
+  const err = validate();
+  if (err) { status.textContent = err; return; }
   localStorage.setItem("ft_token", token);
-  $("btn-save").disabled = $("btn-save-run").disabled = true;
+  ["btn-save", "btn-save-run", "btn-delete"].forEach((b) => ($(b).disabled = true));
   try {
-    status.textContent = "Fetching current config…";
-    const cur = await gh("/contents/config.yaml?ref=main");
-    CONFIG_TEXT = decodeURIComponent(escape(atob(cur.content.replace(/\n/g, ""))));
     const emailsChanged = await saveEmails(status);
-    const next = buildNewConfig();
-    if (next === CONFIG_TEXT) { status.textContent = emailsChanged ? "Recipients saved." : "No changes to save."; }
-    else {
-      status.textContent = "Committing config.yaml…";
-      await gh("/contents/config.yaml", {
+    const trip = LATEST.trips.find((x) => x.id === $("f-trip").value);
+    const path = trip ? trip.file : `trips/${selectedUser()}--${slug($("f-name").value)}.yaml`;
+    let sha = null, existing = null;
+    if (trip) {
+      status.textContent = "Fetching trip file…";
+      const cur = await gh("/contents/" + path + "?ref=main");
+      sha = cur.sha;
+      existing = b64ToText(cur.content);
+    }
+    const next = tripFileText(existing);
+    if (existing !== next) {
+      status.textContent = "Committing trip…";
+      await gh("/contents/" + path, {
         method: "PUT",
         body: JSON.stringify({
-          message: "config: update filters via dashboard",
+          message: `trip: ${trip ? "update" : "add"} ${selectedUser()}/${slug($("f-name").value)} via dashboard`,
           content: btoa(unescape(encodeURIComponent(next))),
-          sha: cur.sha, branch: "main",
+          ...(sha ? { sha } : {}), branch: "main",
         }),
       });
-      CONFIG_TEXT = next;
-      status.textContent = "Saved — next scan will use the new filters.";
+      status.textContent = "Saved — next scan will use it.";
+    } else {
+      status.textContent = emailsChanged ? "Email saved." : "No changes to save.";
     }
     if (rescan) {
       status.textContent += " Starting rescan…";
@@ -672,11 +767,37 @@ async function save(rescan) {
   } catch (e) {
     status.textContent = "Failed: " + e.message + (String(e.message).startsWith("401") ? " — check the token." : "");
   } finally {
-    $("btn-save").disabled = $("btn-save-run").disabled = false;
+    ["btn-save", "btn-save-run", "btn-delete"].forEach((b) => ($(b).disabled = false));
   }
 }
+
+async function deleteTrip() {
+  const status = $("save-status");
+  const trip = LATEST.trips.find((x) => x.id === $("f-trip").value);
+  if (!trip) return;
+  if (!confirm(`Delete "${trip.config.name}" (${trip.config.user})? Its scans stop; history stays in the repo.`)) return;
+  ["btn-save", "btn-save-run", "btn-delete"].forEach((b) => ($(b).disabled = true));
+  try {
+    const cur = await gh("/contents/" + trip.file + "?ref=main");
+    await gh("/contents/" + trip.file, {
+      method: "DELETE",
+      body: JSON.stringify({ message: `trip: remove ${trip.id} via dashboard`, sha: cur.sha, branch: "main" }),
+    });
+    status.textContent = "Trip deleted. Starting rescan to refresh the dashboard…";
+    const t0 = Date.now();
+    await gh("/actions/workflows/daily.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main" }) });
+    closeDrawer();
+    watchRescan(t0);
+  } catch (e) {
+    status.textContent = "Failed: " + e.message;
+  } finally {
+    ["btn-save", "btn-save-run", "btn-delete"].forEach((b) => ($(b).disabled = false));
+  }
+}
+
 $("btn-save").addEventListener("click", () => save(false));
 $("btn-save-run").addEventListener("click", () => save(true));
+$("btn-delete").addEventListener("click", deleteTrip);
 
 /* ---------- rescan progress & auto-refresh ---------- */
 const fmtETA = (ms) => {
@@ -700,7 +821,6 @@ function progDone(ok, html) {
   RESCANNING = false;
   if (ok) setTimeout(() => { p.className = "progress"; }, 12000);
 }
-
 async function lastRunDuration() {
   try {
     const r = await gh("/actions/workflows/daily.yml/runs?status=success&per_page=1");
@@ -712,7 +832,6 @@ async function lastRunDuration() {
   } catch (e) {}
   return 240000;
 }
-
 async function watchRescan(t0) {
   RESCANNING = true;
   progShow("Contacting GitHub…", 2, null);
@@ -734,7 +853,7 @@ async function watchRescan(t0) {
     const elapsed = Date.now() - t0;
     progShow(run.status === "queued" ? "Queued on GitHub…" : "Scanning the market (live Google Flights queries)…",
              Math.min(94, (elapsed / est) * 100), est - elapsed);
-    if (elapsed > 15 * 60000) {
+    if (elapsed > 20 * 60000) {
       progDone(false, 'Taking unusually long — <a href="https://github.com/Rehann2/flight-tracker/actions" target="_blank" rel="noopener">check Actions</a>');
       return;
     }
@@ -755,7 +874,6 @@ async function watchRescan(t0) {
     progDone(false, "Scan finished, but reloading data failed — refresh the page.");
   }
 }
-
 async function refreshFromApi() {
   const [lj, hc] = await Promise.all([
     gh("/contents/data/latest.json?ref=main"),

@@ -1,0 +1,15 @@
+# One tracked trip. All fields editable here or from the dashboard drawer.
+user: rehan
+name: BLR winter
+origin: CDG
+destination: BLR
+window_start: 2026-12-05
+window_end: 2027-01-25
+trip_days: 40
+budget_eur: 900
+max_stops: 1
+max_duration_hours: 16
+avoid_layovers: [middle-east]
+cabin: economy
+adults: 1
+alert_threshold_pct: 3

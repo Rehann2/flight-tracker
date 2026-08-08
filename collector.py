@@ -1,9 +1,11 @@
-"""Daily collector: scan every valid date pair from config.yaml, store a snapshot
-in SQLite, and print the daily digest (with day-over-day diff when history exists).
+"""Daily collector, multi-trip: every trips/*.yaml is one tracked trip owned by a
+user. Scans all trips (deduplicating identical Google queries across trips),
+stores per-trip snapshots in SQLite, exports data/latest.json + data/history.csv,
+prints a digest.
 
 Pipeline per date pair: fast_flights builds the Google Flights URL -> headless
 Chromium renders it -> DOM result rows parsed. Prices are indicative (±few %
-session noise vs a logged-in browser); the digest links to live pages.
+session noise vs a logged-in browser); links show live fares.
 """
 
 import datetime as dt
@@ -35,9 +37,24 @@ MIDDLE_EAST_HUBS = {
 }
 
 
-def expand_avoid(cfg):
+def slug(s):
+    return re.sub(r"[^a-z0-9]+", "-", str(s).lower()).strip("-")
+
+
+def load_trips():
+    trips = []
+    for f in sorted((ROOT / "trips").glob("*.yaml")):
+        t = yaml.safe_load(f.read_text())
+        t["file"] = f"trips/{f.name}"
+        t["id"] = f"{t['user']}/{slug(t['name'])}"
+        t["route"] = f"{t['origin']}-{t['destination']}"
+        trips.append(t)
+    return trips
+
+
+def expand_avoid(t):
     out = set()
-    for item in cfg["filters"].get("avoid_layovers") or []:
+    for item in t.get("avoid_layovers") or []:
         if str(item).lower().replace("_", "-") in ("middle-east", "middleeast", "me"):
             out |= MIDDLE_EAST_HUBS
         else:
@@ -45,33 +62,29 @@ def expand_avoid(cfg):
     return out
 
 
-def load_config():
-    return yaml.safe_load((ROOT / "config.yaml").read_text())
-
-
-def date_pairs(cfg):
-    start = cfg["trip"]["window_start"]
-    end = cfg["trip"]["window_end"]
-    days = cfg["trip"]["trip_days"]
+def date_pairs(t):
+    start, end, days = t["window_start"], t["window_end"], t["trip_days"]
     dep = start
     while dep + dt.timedelta(days=days) <= end:
         yield dep.isoformat(), (dep + dt.timedelta(days=days)).isoformat()
         dep += dt.timedelta(days=1)
 
 
-def build_url(cfg, depart, ret):
+def query_key(t, depart, ret):
+    return (t["origin"], t["destination"], depart, ret, t["cabin"], t["adults"], t["max_stops"])
+
+
+def build_url(t, depart, ret):
     q = create_query(
         flights=[
-            FlightQuery(date=depart, from_airport=cfg["route"]["origin"],
-                        to_airport=cfg["route"]["destination"]),
-            FlightQuery(date=ret, from_airport=cfg["route"]["destination"],
-                        to_airport=cfg["route"]["origin"]),
+            FlightQuery(date=depart, from_airport=t["origin"], to_airport=t["destination"]),
+            FlightQuery(date=ret, from_airport=t["destination"], to_airport=t["origin"]),
         ],
         trip="round-trip",
-        seat=cfg["filters"]["cabin"],
-        passengers=Passengers(adults=cfg["filters"]["adults"]),
+        seat=t["cabin"],
+        passengers=Passengers(adults=t["adults"]),
         currency="EUR",
-        max_stops=cfg["filters"]["max_stops"],
+        max_stops=t["max_stops"],
     )
     return q.url() + "&hl=en"
 
@@ -90,7 +103,7 @@ def parse_row(text):
             stops = 0 if l == "Nonstop" else int(l.split()[0])
     via = [c for l in lines for c in LAYOVER_RE.findall(l)]
     return {"price": price, "airline": airline, "duration_min": duration_min,
-            "stops": stops, "via": via, "raw": text}
+            "stops": stops, "via": via}
 
 
 def accept_consent(page):
@@ -103,7 +116,7 @@ def accept_consent(page):
         page.wait_for_url(lambda u: "consent" not in u, timeout=30000)
 
 
-def fetch_pair(context, url, attempts=3):
+def fetch_url(context, url, attempts=3):
     for i in range(attempts):
         page = context.new_page()
         try:
@@ -113,7 +126,6 @@ def fetch_pair(context, url, attempts=3):
                 "() => /€\\s?\\d{3}/.test(document.body.innerText)", timeout=45000)
             raw = page.eval_on_selector_all("ul li", "els => els.map(e => e.innerText)")
             rows = [parse_row(r) for r in raw if r and "€" in r and "round trip" in r]
-            # DOM renders each itinerary twice (one stripped duplicate) — keep parsed ones
             rows = [r for r in rows if r["price"] and r["airline"]]
             if rows:
                 return rows
@@ -124,132 +136,123 @@ def fetch_pair(context, url, attempts=3):
     return []
 
 
-def apply_filters(rows, cfg):
-    f = cfg["filters"]
-    avoid = expand_avoid(cfg)
+def apply_filters(rows, t):
+    avoid = expand_avoid(t)
     return [r for r in rows
-            if (r["duration_min"] or 0) <= f["max_duration_hours"] * 60
-            and (r["stops"] is None or r["stops"] <= f["max_stops"])
+            if (r["duration_min"] or 0) <= t["max_duration_hours"] * 60
+            and (r["stops"] is None or r["stops"] <= t["max_stops"])
             and not (set(r.get("via") or []) & avoid)]
 
 
-def store(run_date, results, cfg):
-    route = f"{cfg['route']['origin']}-{cfg['route']['destination']}"
-    trip_days = cfg["trip"]["trip_days"]
+def store(run_date, trip_results):
     DB.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB)
     con.execute("""CREATE TABLE IF NOT EXISTS snapshots (
         run_date TEXT, depart TEXT, ret TEXT, price INTEGER,
-        airline TEXT, duration_min INTEGER, stops INTEGER, rank INTEGER)""")
+        airline TEXT, duration_min INTEGER, stops INTEGER, rank INTEGER,
+        via TEXT, route TEXT, trip_days INTEGER)""")
     cols = [r[1] for r in con.execute("PRAGMA table_info(snapshots)")]
-    if "via" not in cols:
-        con.execute("ALTER TABLE snapshots ADD COLUMN via TEXT")
-    if "route" not in cols:
-        con.execute("ALTER TABLE snapshots ADD COLUMN route TEXT")
-        con.execute("ALTER TABLE snapshots ADD COLUMN trip_days INTEGER")
-        # legacy rows predate config stamping; backfill with the current config
-        con.execute("UPDATE snapshots SET route = ?, trip_days = ? WHERE route IS NULL",
-                    (route, trip_days))
+    for col, typ in (("via", "TEXT"), ("route", "TEXT"), ("trip_days", "INTEGER"),
+                     ("user", "TEXT"), ("trip_id", "TEXT")):
+        if col not in cols:
+            con.execute(f"ALTER TABLE snapshots ADD COLUMN {col} {typ}")
+    # legacy rows predate users/trips; they were all rehan's CDG-BLR experiments
+    con.execute("UPDATE snapshots SET user='rehan', trip_id='rehan/blr-winter' WHERE trip_id IS NULL")
     con.execute("DELETE FROM snapshots WHERE run_date = ?", (run_date,))
-    for depart, ret, rows in results:
-        for rank, r in enumerate(sorted(rows, key=lambda x: x["price"])):
-            con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                        (run_date, depart, ret, r["price"], r["airline"],
-                         r["duration_min"], r["stops"], rank,
-                         ",".join(r.get("via") or []), route, trip_days))
+    for t, results in trip_results:
+        for depart, ret, rows in results:
+            for rank, r in enumerate(sorted(rows, key=lambda x: x["price"])):
+                con.execute("INSERT INTO snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (run_date, depart, ret, r["price"], r["airline"],
+                             r["duration_min"], r["stops"], rank,
+                             ",".join(r.get("via") or []), t["route"], t["trip_days"],
+                             t["user"], t["id"]))
     con.commit()
     return con
 
 
-def previous_mins(con, run_date):
-    rows = con.execute("""
-        SELECT depart, MIN(price) FROM snapshots
-        WHERE run_date = (SELECT MAX(run_date) FROM snapshots WHERE run_date < ?)
-        GROUP BY depart""", (run_date,)).fetchall()
-    return dict(rows)
-
-
-def digest(cfg, con, run_date, results):
-    prev = previous_mins(con, run_date)
-    print(f"\n{'=' * 62}")
-    print(f"  FLIGHT TRACKER DIGEST — {run_date}")
-    print(f"  {cfg['route']['origin']} <-> {cfg['route']['destination']}, "
-          f"{cfg['trip']['trip_days']}-day trip, budget <= EUR {cfg['filters']['budget_eur']}")
-    print(f"{'=' * 62}")
-    mins, best = [], None
-    for depart, ret, rows in results:
-        kept = apply_filters(rows, cfg)
-        if not kept:
-            print(f"  {depart} -> {ret}: no options passed filters")
-            continue
-        top = min(kept, key=lambda r: r["price"])
-        mins.append(top["price"])
-        delta = ""
-        if depart in prev:
-            pct = (top["price"] - prev[depart]) / prev[depart] * 100
-            mark = " <-- MOVED" if abs(pct) >= cfg["notify"]["alert_threshold_pct"] else ""
-            delta = f"  ({pct:+.1f}% vs prev){mark}"
-        flag = " OVER BUDGET" if top["price"] > cfg["filters"]["budget_eur"] else ""
-        print(f"  {depart} -> {ret}:  EUR {top['price']:>5}  "
-              f"{top['airline']:<20} {top['stops']} stop(s){delta}{flag}")
-        if best is None or top["price"] < best[0]:
-            best = (top["price"], depart, ret, top["airline"])
-    if mins:
-        print(f"{'-' * 62}")
-        print(f"  BEST:    EUR {best[0]} | {best[1]} -> {best[2]} | {best[3]}")
-        print(f"  AVERAGE of per-date minimums: EUR {sum(mins) // len(mins)} "
-              f"across {len(mins)} date pairs")
-    print(f"{'=' * 62}")
-
-
-def export_data(cfg, con, run_date, results):
-    """Write data/latest.json (dashboard + email source) and data/history.csv."""
-    pairs_out = []
-    for depart, ret, rows in results:
-        kept = sorted(apply_filters(rows, cfg), key=lambda r: r["price"])
-        pairs_out.append({
-            "depart": depart, "return": ret,
-            "min_price": kept[0]["price"] if kept else None,
-            "url": build_url(cfg, depart, ret),
-            "top": [{k: r[k] for k in ("price", "airline", "duration_min", "stops", "via")}
-                    for r in kept[:5]],
+def export_data(con, run_date, trip_results):
+    trips_out = []
+    for t, results in trip_results:
+        pairs_out = []
+        for depart, ret, rows in results:
+            kept = sorted(apply_filters(rows, t), key=lambda r: r["price"])
+            pairs_out.append({
+                "depart": depart, "return": ret,
+                "min_price": kept[0]["price"] if kept else None,
+                "url": build_url(t, depart, ret),
+                "top": [{k: r[k] for k in ("price", "airline", "duration_min", "stops", "via")}
+                        for r in kept[:5]],
+            })
+        mins = [p["min_price"] for p in pairs_out if p["min_price"]]
+        cfg_keys = ("user", "name", "origin", "destination", "window_start", "window_end",
+                    "trip_days", "budget_eur", "max_stops", "max_duration_hours",
+                    "avoid_layovers", "cabin", "adults", "alert_threshold_pct")
+        trips_out.append({
+            "id": t["id"], "file": t["file"],
+            "config": {k: t.get(k) for k in cfg_keys},
+            "best": min(mins) if mins else None,
+            "avg_of_mins": sum(mins) // len(mins) if mins else None,
+            "pairs": pairs_out,
         })
-    mins = [p["min_price"] for p in pairs_out if p["min_price"]]
     (ROOT / "data" / "latest.json").write_text(json.dumps({
         "run_date": run_date,
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "route": cfg["route"], "trip": cfg["trip"], "filters": cfg["filters"],
-        "best": min(mins) if mins else None,
-        "avg_of_mins": sum(mins) // len(mins) if mins else None,
-        "pairs": pairs_out,
+        "trips": trips_out,
     }, indent=1, default=str))
-    hist = con.execute("""SELECT run_date, depart, ret, MIN(price), route, trip_days
-                          FROM snapshots GROUP BY run_date, depart
-                          ORDER BY run_date, depart""").fetchall()
-    lines = ["run_date,depart,return,min_price,route,trip_days"] + [
+    hist = con.execute("""SELECT run_date, trip_id, depart, ret, MIN(price), route, trip_days
+                          FROM snapshots GROUP BY run_date, trip_id, depart
+                          ORDER BY run_date, trip_id, depart""").fetchall()
+    lines = ["run_date,trip_id,depart,return,min_price,route,trip_days"] + [
         ",".join("" if v is None else str(v) for v in r) for r in hist]
     (ROOT / "data" / "history.csv").write_text("\n".join(lines) + "\n")
 
 
+def digest(con, run_date, trip_results):
+    for t, results in trip_results:
+        mins, best = [], None
+        print(f"\n=== {t['id']} | {t['route']} {t['trip_days']}d ===")
+        for depart, ret, rows in results:
+            kept = apply_filters(rows, t)
+            if not kept:
+                continue
+            top = min(kept, key=lambda r: r["price"])
+            mins.append(top["price"])
+            if best is None or top["price"] < best[0]:
+                best = (top["price"], depart, ret, top["airline"])
+        if mins:
+            print(f"  BEST: EUR {best[0]} | {best[1]} -> {best[2]} | {best[3]}")
+            print(f"  AVERAGE of per-date minimums: EUR {sum(mins) // len(mins)} across {len(mins)} date pairs")
+
+
 def main():
-    cfg = load_config()
+    trips = load_trips()
     run_date = dt.date.today().isoformat()
-    pairs = list(date_pairs(cfg))
-    print(f"Scanning {len(pairs)} date pairs...")
-    results = []
+    # dedupe identical queries across trips so overlapping trips cost one fetch
+    wanted = {}
+    for t in trips:
+        for depart, ret in date_pairs(t):
+            wanted.setdefault(query_key(t, depart, ret), (t, depart, ret))
+    print(f"{len(trips)} trip(s), {len(wanted)} unique queries to scan...")
+    cache = {}
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(locale="en-US")
-        for depart, ret in pairs:
-            rows = fetch_pair(context, build_url(cfg, depart, ret))
-            print(f"  {depart} -> {ret}: {len(rows)} options"
+        for key, (t, depart, ret) in wanted.items():
+            rows = fetch_url(context, build_url(t, depart, ret))
+            cache[key] = rows
+            print(f"  {t['origin']}->{t['destination']} {depart}/{ret}: {len(rows)} options"
                   + (f", cheapest EUR {min(r['price'] for r in rows)}" if rows else ""),
                   flush=True)
-            results.append((depart, ret, rows))
         browser.close()
-    con = store(run_date, results, cfg)
-    export_data(cfg, con, run_date, results)
-    digest(cfg, con, run_date, results)
+    trip_results = []
+    for t in trips:
+        results = [(depart, ret, cache.get(query_key(t, depart, ret), []))
+                   for depart, ret in date_pairs(t)]
+        trip_results.append((t, results))
+    con = store(run_date, trip_results)
+    export_data(con, run_date, trip_results)
+    digest(con, run_date, trip_results)
     con.close()
 
 

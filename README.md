@@ -9,7 +9,7 @@ time your booking. Built because Google Flights only tracks fixed dates.
 ## How it works
 
 ```
-config.yaml ──> collector.py ──> Google Flights (headless Chromium)
+trips/*.yaml ──> collector.py ──> Google Flights (headless Chromium)
                      │
                      ├──> data/tracker.sqlite   full snapshot history
                      ├──> data/latest.json      today's landscape (dashboard/email source)
@@ -22,7 +22,11 @@ morning and commits the refreshed `data/` back to the repo.
 
 ## Configure
 
-Edit `config.yaml` (route, window, trip length, filters). That's the whole UI for v1.
+Every file in `trips/` is one tracked trip owned by a user (see `trips/rehan--blr-winter.yaml`
+for the schema). Add, edit, or delete trips from the dashboard's **⚙ Manage trips** drawer —
+or edit the files directly. Each user's daily email covers only their own trips; recipient
+addresses live in the private `DIGEST_TO` repo variable (a JSON map of user → addresses),
+never in the repo.
 
 ## Run locally
 
