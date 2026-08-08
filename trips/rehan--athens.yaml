@@ -1,0 +1,15 @@
+# One tracked trip. All fields editable here or from the dashboard drawer.
+user: rehan
+name: Athens
+origin: CDG
+destination: AIA
+window_start: 2026-11-05
+window_end: 2026-11-09
+trip_days: 4
+budget_eur: 220
+max_stops: 1
+max_duration_hours: 5
+avoid_layovers: [middle-east]
+cabin: economy
+adults: 1
+alert_threshold_pct: 3
