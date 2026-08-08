@@ -252,12 +252,21 @@
     </div>
     <p id="matrix-note" style="font-size:12.5px; color:var(--muted); margin:0;"></p>
 
+    <div class="field">
+      <label for="f-emails">Daily email updates — recipients (comma-separated)</label>
+      <input id="f-emails" type="text" placeholder="you@example.com, friend@example.com">
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin:-6px 0 0;">
+      Stored as a private repo variable — never visible in the public repo.
+      Sending also needs the SMTP secrets (one-time, see repo settings).
+    </p>
+
     <details class="tok" id="tok-details">
       <summary>GitHub token (one-time setup)</summary>
       <ol>
         <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token</a></li>
         <li>Repository access: <b>Only select repositories → flight-tracker</b></li>
-        <li>Permissions: <b>Contents → Read and write</b>, <b>Actions → Read and write</b></li>
+        <li>Permissions: <b>Contents → Read and write</b>, <b>Actions → Read and write</b>, <b>Variables → Read and write</b></li>
         <li>Paste it below — it stays in this browser only (localStorage), never in the repo.</li>
       </ol>
       <div class="field"><label for="f-token">Token</label><input id="f-token" type="password" placeholder="github_pat_…"></div>
@@ -488,6 +497,7 @@ function fillForm() {
   $("f-token").value = localStorage.getItem("ft_token") || "";
   if (!localStorage.getItem("ft_token")) $("tok-details").open = true;
   updateMatrixNote();
+  loadEmails();
 }
 
 function updateMatrixNote() {
@@ -537,7 +547,35 @@ async function gh(path, opts = {}) {
     const body = await r.json().catch(() => ({}));
     throw new Error(r.status + (body.message ? ": " + body.message : ""));
   }
-  return r.status === 204 ? null : r.json();
+  const txt = await r.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+let EMAILS_ORIG = "";
+async function loadEmails() {
+  if (!$("f-token").value.trim()) return;
+  try {
+    const v = await gh("/actions/variables/DIGEST_TO");
+    EMAILS_ORIG = v && v.value ? v.value : "";
+    $("f-emails").value = EMAILS_ORIG;
+  } catch (e) { EMAILS_ORIG = ""; }
+}
+
+async function saveEmails(status) {
+  const emails = $("f-emails").value.trim();
+  if (emails === EMAILS_ORIG) return false;
+  const bad = emails.split(",").map((s) => s.trim()).filter((s) => s && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s));
+  if (bad.length) throw new Error("invalid email: " + bad.join(", "));
+  status.textContent = "Saving recipients…";
+  const body = JSON.stringify({ name: "DIGEST_TO", value: emails });
+  try {
+    await gh("/actions/variables/DIGEST_TO", { method: "PATCH", body });
+  } catch (e) {
+    if (String(e.message).startsWith("404")) await gh("/actions/variables", { method: "POST", body });
+    else throw e;
+  }
+  EMAILS_ORIG = emails;
+  return true;
 }
 
 async function save(rescan) {
@@ -550,8 +588,9 @@ async function save(rescan) {
     status.textContent = "Fetching current config…";
     const cur = await gh("/contents/config.yaml?ref=main");
     CONFIG_TEXT = decodeURIComponent(escape(atob(cur.content.replace(/\n/g, ""))));
+    const emailsChanged = await saveEmails(status);
     const next = buildNewConfig();
-    if (next === CONFIG_TEXT) { status.textContent = "No changes to save."; }
+    if (next === CONFIG_TEXT) { status.textContent = emailsChanged ? "Recipients saved." : "No changes to save."; }
     else {
       status.textContent = "Committing config.yaml…";
       await gh("/contents/config.yaml", {

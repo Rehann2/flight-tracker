@@ -3,3 +3,4 @@
 .venv/
 __pycache__/
 data_run*.log
+data/digest_preview.html

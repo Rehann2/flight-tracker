@@ -36,6 +36,12 @@ Personal tool that tracks **all flights matching a filter** (not one fixed itine
 - BEST: **€583** Dec 9 → Jan 18 (Gulf Air, 1 stop). Average of per-date minimums: **€656**. Gulf Air is cheapest on every single date pair. Range €583–733.
 - Repo: https://github.com/Rehann2/flight-tracker (private), gh CLI authed as Rehann2 on this box (token in plain text ~/.config/gh/hosts.yml).
 
+## Deployment (2026-08-08, evening)
+- Repo PUBLIC (user approved via full-setup choice). **Live dashboard: https://rehann2.github.io/flight-tracker/** (GitHub Pages, branch main, root; index.html; dashboard.html removed).
+- index.html fetches data/latest.json + data/history.csv + config.yaml live → auto-updates after each daily scan. History chart (best + avg lines) activates at ≥2 scans; Δ-day column from history.csv.
+- In-UI filter editor: settings drawer → edits config.yaml via GitHub contents API + optional workflow_dispatch rescan. Requires user's fine-grained PAT (repo-scoped, Contents+Actions RW) pasted once, stored in browser localStorage only. NOT YET DONE by user.
+- claude.ai artifact (c7583385…) is a static snapshot from the first scan — superseded by Pages.
+
 ## Status / open items (2026-08-08)
 - Route confirmed: Paris (CDG, +ORY later) ⇄ Bangalore (BLR). Window: depart ~1st week of Dec 2026, return by ~3rd week of Jan 2027, exactly 40 days. User has GitHub.
 - MVP fetcher WORKS (`mvp_fetch.py`): Dec 3→Jan 12 cheapest €638 (Gulf Air, 12h55, 1 stop), Dec 7→Jan 16 cheapest €646. Awaiting user's manual Google Flights cross-check (ground truth) before scaling.

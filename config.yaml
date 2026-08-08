@@ -23,5 +23,6 @@ filters:
   adults: 1
 
 notify:
-  email: SET_AT_DEPLOY_STEP   # daily digest recipient
+  # Recipients are NOT stored here (public repo) — they live in the repo
+  # Actions variable DIGEST_TO, managed from the dashboard's filter drawer.
   alert_threshold_pct: 3      # highlight day-over-day moves bigger than this
