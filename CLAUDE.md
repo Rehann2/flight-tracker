@@ -31,6 +31,11 @@ Personal tool that tracks **all flights matching a filter** (not one fixed itine
 - Config-driven, no hardcoded routes. One trip first; generalize (multiple trackers) only after the single-trip version works.
 - No speculative features. Surgical changes. Verifiable success criteria per step.
 
+## First full scan results (2026-08-08, local run)
+- 10/12 pairs succeeded (Dec 2 + Dec 8 departures failed 3 attempts — Google throttling after a day of heavy testing; once-daily cadence should be fine).
+- BEST: **€583** Dec 9 → Jan 18 (Gulf Air, 1 stop). Average of per-date minimums: **€656**. Gulf Air is cheapest on every single date pair. Range €583–733.
+- Repo: https://github.com/Rehann2/flight-tracker (private), gh CLI authed as Rehann2 on this box (token in plain text ~/.config/gh/hosts.yml).
+
 ## Status / open items (2026-08-08)
 - Route confirmed: Paris (CDG, +ORY later) ⇄ Bangalore (BLR). Window: depart ~1st week of Dec 2026, return by ~3rd week of Jan 2027, exactly 40 days. User has GitHub.
 - MVP fetcher WORKS (`mvp_fetch.py`): Dec 3→Jan 12 cheapest €638 (Gulf Air, 12h55, 1 stop), Dec 7→Jan 16 cheapest €646. Awaiting user's manual Google Flights cross-check (ground truth) before scaling.

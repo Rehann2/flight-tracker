@@ -1,5 +1,7 @@
 # Flight Tracker
 
+**Live dashboard: https://rehann2.github.io/flight-tracker/**
+
 Tracks **every** round-trip itinerary matching a filter — date window, exact trip
 length, budget, stops, duration — and records the daily price landscape, so you can
 time your booking. Built because Google Flights only tracks fixed dates.
