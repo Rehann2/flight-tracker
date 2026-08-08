@@ -11,9 +11,9 @@ route:
   destination_alternates: []
 
 trip:
-  window_start: 2026-12-01    # trip can start from this date...
+  window_start: 2026-12-10    # trip can start from this date...
   window_end: 2027-01-21      # ...and must be fully over by this date
-  trip_days: 40               # exact trip length -> departures Dec 1-12
+  trip_days: 30               # exact trip length -> departures Dec 1-12
 
 filters:
   budget_eur: 900             # PLACEHOLDER — set your real cap; options above it are hidden from top list
