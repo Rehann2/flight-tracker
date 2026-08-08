@@ -1,6 +1,6 @@
 {
  "run_date": "2026-08-08",
- "generated_at": "2026-08-08T12:41:54Z",
+ "generated_at": "2026-08-08T13:25:28Z",
  "trips": [
   {
    "id": "rehan/blr-winter",
@@ -51,9 +51,9 @@
        ]
       },
       {
-       "price": 956,
+       "price": 1057,
        "airline": "British Airways",
-       "duration_min": 785,
+       "duration_min": 775,
        "stops": 1,
        "via": [
         "LHR"
