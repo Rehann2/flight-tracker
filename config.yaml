@@ -11,15 +11,15 @@ route:
   destination_alternates: []
 
 trip:
-  window_start: 2026-12-10    # trip can start from this date...
-  window_end: 2027-01-21      # ...and must be fully over by this date
-  trip_days: 30               # exact trip length -> departures Dec 1-12
+  window_start: 2026-12-05    # trip can start from this date...
+  window_end: 2027-01-25      # ...and must be fully over by this date
+  trip_days: 40               # exact trip length -> departures Dec 1-12
 
 filters:
   budget_eur: 900             # PLACEHOLDER — set your real cap; options above it are hidden from top list
   max_stops: 1                # 0 = nonstop only
   max_duration_hours: 16      # outbound leg duration cap (list shows outbound; return chosen at booking)
-  avoid_layovers: []          # airport codes to exclude as connections, and/or the preset "middle-east"
+  avoid_layovers: [middle-east]          # airport codes to exclude as connections, and/or the preset "middle-east"
   cabin: economy              # economy | premium-economy | business | first
   adults: 1
 
