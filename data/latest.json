@@ -1,6 +1,6 @@
 {
- "run_date": "2026-10-01",
- "generated_at": "2026-10-01T12:49:53Z",
+ "run_date": "2026-10-02",
+ "generated_at": "2026-10-02T12:06:22Z",
  "trips": [
   {
    "id": "khushu/blr-winter-34-days",
@@ -24,7 +24,7 @@
     "alert_threshold_pct": 3
    },
    "best": 783,
-   "avg_of_mins": 1099,
+   "avg_of_mins": 1118,
    "pairs": [
     {
      "depart": "2026-12-12",
@@ -71,11 +71,11 @@
     {
      "depart": "2026-12-13",
      "return": "2027-01-16",
-     "min_price": 825,
+     "min_price": 951,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 825,
+       "price": 951,
        "airline": "SWISS",
        "duration_min": 750,
        "stops": 1,
@@ -84,12 +84,12 @@
        ]
       },
       {
-       "price": 1131,
-       "airline": "Lufthansa City Airlines, Lufthansa",
-       "duration_min": 695,
+       "price": 1320,
+       "airline": "Lufthansa",
+       "duration_min": 670,
        "stops": 1,
        "via": [
-        "MUC"
+        "FRA"
        ]
       },
       {
@@ -98,15 +98,6 @@
        "duration_min": 585,
        "stops": 0,
        "via": []
-      },
-      {
-       "price": 1473,
-       "airline": "Air France, KLM",
-       "duration_min": 720,
-       "stops": 1,
-       "via": [
-        "AMS"
-       ]
       }
      ]
     },
@@ -172,9 +163,35 @@
     {
      "depart": "2026-12-16",
      "return": "2027-01-19",
-     "min_price": null,
+     "min_price": 1104,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTYoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTkoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
-     "top": []
+     "top": [
+      {
+       "price": 1104,
+       "airline": "Lufthansa",
+       "duration_min": 680,
+       "stops": 1,
+       "via": [
+        "MUC"
+       ]
+      },
+      {
+       "price": 1111,
+       "airline": "Lufthansa",
+       "duration_min": 670,
+       "stops": 1,
+       "via": [
+        "FRA"
+       ]
+      },
+      {
+       "price": 1522,
+       "airline": "Air France",
+       "duration_min": 585,
+       "stops": 0,
+       "via": []
+      }
+     ]
     },
     {
      "depart": "2026-12-17",
@@ -230,9 +247,44 @@
     {
      "depart": "2026-12-18",
      "return": "2027-01-21",
-     "min_price": null,
+     "min_price": 1236,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTgoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjEoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
-     "top": []
+     "top": [
+      {
+       "price": 1236,
+       "airline": "SWISS",
+       "duration_min": 750,
+       "stops": 1,
+       "via": [
+        "ZRH"
+       ]
+      },
+      {
+       "price": 1415,
+       "airline": "Lufthansa",
+       "duration_min": 670,
+       "stops": 1,
+       "via": [
+        "FRA"
+       ]
+      },
+      {
+       "price": 1603,
+       "airline": "Air France, KLM",
+       "duration_min": 720,
+       "stops": 1,
+       "via": [
+        "AMS"
+       ]
+      },
+      {
+       "price": 1647,
+       "airline": "Air France",
+       "duration_min": 585,
+       "stops": 0,
+       "via": []
+      }
+     ]
     },
     {
      "depart": "2026-12-19",
@@ -305,9 +357,18 @@
     {
      "depart": "2026-12-21",
      "return": "2027-01-24",
-     "min_price": 1277,
+     "min_price": 1250,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMjEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjQoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
+      {
+       "price": 1250,
+       "airline": "British Airways",
+       "duration_min": 780,
+       "stops": 1,
+       "via": [
+        "LHR"
+       ]
+      },
       {
        "price": 1277,
        "airline": "Lufthansa",
@@ -318,7 +379,7 @@
        ]
       },
       {
-       "price": 1567,
+       "price": 1510,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -344,7 +405,7 @@
        ]
       },
       {
-       "price": 1180,
+       "price": 1143,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
@@ -377,7 +438,7 @@
        ]
       },
       {
-       "price": 1160,
+       "price": 1127,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -386,7 +447,7 @@
        ]
       },
       {
-       "price": 1176,
+       "price": 1143,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
@@ -437,7 +498,7 @@
        ]
       },
       {
-       "price": 1192,
+       "price": 1150,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
@@ -468,56 +529,14 @@
     "adults": 1,
     "alert_threshold_pct": 3
    },
-   "best": 825,
-   "avg_of_mins": 1122,
+   "best": 868,
+   "avg_of_mins": 1130,
    "pairs": [
     {
      "depart": "2026-12-12",
      "return": "2027-01-16",
-     "min_price": 825,
-     "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
-     "top": [
-      {
-       "price": 825,
-       "airline": "SWISS",
-       "duration_min": 750,
-       "stops": 1,
-       "via": [
-        "ZRH"
-       ]
-      },
-      {
-       "price": 1131,
-       "airline": "Lufthansa City Airlines, Lufthansa",
-       "duration_min": 695,
-       "stops": 1,
-       "via": [
-        "MUC"
-       ]
-      },
-      {
-       "price": 1591,
-       "airline": "Air France",
-       "duration_min": 585,
-       "stops": 0,
-       "via": []
-      },
-      {
-       "price": 1768,
-       "airline": "Air France, KLM",
-       "duration_min": 720,
-       "stops": 1,
-       "via": [
-        "AMS"
-       ]
-      }
-     ]
-    },
-    {
-     "depart": "2026-12-13",
-     "return": "2027-01-17",
      "min_price": 868,
-     "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTcoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+     "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTIoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
        "price": 868,
@@ -535,6 +554,39 @@
        "stops": 1,
        "via": [
         "MUC"
+       ]
+      },
+      {
+       "price": 1320,
+       "airline": "Lufthansa",
+       "duration_min": 670,
+       "stops": 1,
+       "via": [
+        "FRA"
+       ]
+      },
+      {
+       "price": 1591,
+       "airline": "Air France",
+       "duration_min": 585,
+       "stops": 0,
+       "via": []
+      }
+     ]
+    },
+    {
+     "depart": "2026-12-13",
+     "return": "2027-01-17",
+     "min_price": 951,
+     "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTcoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
+     "top": [
+      {
+       "price": 951,
+       "airline": "SWISS",
+       "duration_min": 750,
+       "stops": 1,
+       "via": [
+        "ZRH"
        ]
       },
       {
@@ -681,14 +733,14 @@
        ]
       },
       {
-       "price": 1549,
+       "price": 1492,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
        "via": []
       },
       {
-       "price": 1595,
+       "price": 1538,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -761,6 +813,15 @@
        "duration_min": 585,
        "stops": 0,
        "via": []
+      },
+      {
+       "price": 1985,
+       "airline": "Air France, KLM",
+       "duration_min": 720,
+       "stops": 1,
+       "via": [
+        "AMS"
+       ]
       }
      ]
     },
@@ -789,7 +850,7 @@
        ]
       },
       {
-       "price": 2014,
+       "price": 1957,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -802,9 +863,18 @@
     {
      "depart": "2026-12-21",
      "return": "2027-01-25",
-     "min_price": 1235,
+     "min_price": 1200,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMjEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjUoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
+      {
+       "price": 1200,
+       "airline": "British Airways",
+       "duration_min": 780,
+       "stops": 1,
+       "via": [
+        "LHR"
+       ]
+      },
       {
        "price": 1235,
        "airline": "Lufthansa",
@@ -841,14 +911,14 @@
        ]
       },
       {
-       "price": 1213,
+       "price": 1143,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
        "via": []
       },
       {
-       "price": 1252,
+       "price": 1219,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -914,8 +984,8 @@
     "adults": 1,
     "alert_threshold_pct": 3
    },
-   "best": 798,
-   "avg_of_mins": 1139,
+   "best": 868,
+   "avg_of_mins": 1142,
    "pairs": [
     {
      "depart": "2026-12-12",
@@ -962,11 +1032,11 @@
     {
      "depart": "2026-12-13",
      "return": "2027-01-18",
-     "min_price": 798,
+     "min_price": 881,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTMoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTgoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 798,
+       "price": 881,
        "airline": "SWISS",
        "duration_min": 750,
        "stops": 1,
@@ -1125,12 +1195,12 @@
        ]
       },
       {
-       "price": 1442,
-       "airline": "Lufthansa",
-       "duration_min": 670,
+       "price": 1631,
+       "airline": "Air France, KLM",
+       "duration_min": 720,
        "stops": 1,
        "via": [
-        "FRA"
+        "AMS"
        ]
       },
       {
@@ -1167,7 +1237,7 @@
        ]
       },
       {
-       "price": 1831,
+       "price": 1774,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
@@ -1213,9 +1283,18 @@
     {
      "depart": "2026-12-21",
      "return": "2027-01-26",
-     "min_price": 1260,
+     "min_price": 1200,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMjEoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMjYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
+      {
+       "price": 1200,
+       "airline": "British Airways",
+       "duration_min": 780,
+       "stops": 1,
+       "via": [
+        "LHR"
+       ]
+      },
       {
        "price": 1260,
        "airline": "Lufthansa",
@@ -1226,7 +1305,7 @@
        ]
       },
       {
-       "price": 1383,
+       "price": 1350,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -1252,6 +1331,22 @@
        ]
       },
       {
+       "price": 1113,
+       "airline": "Air France",
+       "duration_min": 585,
+       "stops": 0,
+       "via": []
+      },
+      {
+       "price": 1122,
+       "airline": "British Airways",
+       "duration_min": 780,
+       "stops": 1,
+       "via": [
+        "LHR"
+       ]
+      },
+      {
        "price": 1140,
        "airline": "Air France, KLM",
        "duration_min": 785,
@@ -1259,13 +1354,6 @@
        "via": [
         "AMS"
        ]
-      },
-      {
-       "price": 1150,
-       "airline": "Air France",
-       "duration_min": 585,
-       "stops": 0,
-       "via": []
       },
       {
        "price": 1189,
@@ -1334,8 +1422,8 @@
     "adults": 1,
     "alert_threshold_pct": 3
    },
-   "best": 682,
-   "avg_of_mins": 893,
+   "best": 668,
+   "avg_of_mins": 878,
    "pairs": [
     {
      "depart": "2026-12-05",
@@ -1382,18 +1470,62 @@
     {
      "depart": "2026-12-06",
      "return": "2027-01-15",
-     "min_price": null,
+     "min_price": 668,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDYoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTUoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
-     "top": []
+     "top": [
+      {
+       "price": 668,
+       "airline": "SWISS",
+       "duration_min": 910,
+       "stops": 1,
+       "via": [
+        "ZRH"
+       ]
+      },
+      {
+       "price": 728,
+       "airline": "Lufthansa City Airlines, Lufthansa",
+       "duration_min": 695,
+       "stops": 1,
+       "via": [
+        "MUC"
+       ]
+      },
+      {
+       "price": 783,
+       "airline": "SWISS",
+       "duration_min": 750,
+       "stops": 1,
+       "via": [
+        "ZRH"
+       ]
+      },
+      {
+       "price": 796,
+       "airline": "Lufthansa",
+       "duration_min": 670,
+       "stops": 1,
+       "via": [
+        "FRA"
+       ]
+      },
+      {
+       "price": 1519,
+       "airline": "Air France",
+       "duration_min": 585,
+       "stops": 0,
+       "via": []
+      }
+     ]
     },
     {
      "depart": "2026-12-07",
      "return": "2027-01-16",
-     "min_price": 838,
+     "min_price": 881,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMDcoAWoFEgNDREdyBRIDQkxSGhwSCjIwMjctMDEtMTYoAWoFEgNCTFJyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 838,
+       "price": 881,
        "airline": "Lufthansa",
        "duration_min": 880,
        "stops": 1,
@@ -1402,7 +1534,7 @@
        ]
       },
       {
-       "price": 1092,
+       "price": 1015,
        "airline": "British Airways",
        "duration_min": 825,
        "stops": 1,
@@ -1630,14 +1762,14 @@
        ]
       },
       {
-       "price": 1549,
+       "price": 1492,
        "airline": "Air France",
        "duration_min": 585,
        "stops": 0,
        "via": []
       },
       {
-       "price": 1725,
+       "price": 1668,
        "airline": "Air France, KLM",
        "duration_min": 720,
        "stops": 1,
@@ -1656,19 +1788,19 @@
       {
        "price": 783,
        "airline": "SWISS",
-       "duration_min": 750,
+       "duration_min": 910,
        "stops": 1,
        "via": [
         "ZRH"
        ]
       },
       {
-       "price": 1089,
-       "airline": "Lufthansa City Airlines, Lufthansa",
-       "duration_min": 695,
+       "price": 866,
+       "airline": "SWISS",
+       "duration_min": 750,
        "stops": 1,
        "via": [
-        "MUC"
+        "ZRH"
        ]
       },
       {
@@ -1793,17 +1925,17 @@
     "adults": 1,
     "alert_threshold_pct": 3
    },
-   "best": 671,
-   "avg_of_mins": 826,
+   "best": 654,
+   "avg_of_mins": 811,
    "pairs": [
     {
      "depart": "2026-12-12",
      "return": "2027-01-31",
-     "min_price": 842,
+     "min_price": 824,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTIoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDEtMzEoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 842,
+       "price": 824,
        "airline": "Etihad",
        "duration_min": 755,
        "stops": 1,
@@ -1837,12 +1969,12 @@
        "via": []
       },
       {
-       "price": 1057,
-       "airline": "Etihad",
-       "duration_min": 730,
+       "price": 1061,
+       "airline": "Lufthansa City Airlines, Lufthansa",
+       "duration_min": 640,
        "stops": 1,
        "via": [
-        "AUH"
+        "MUC"
        ]
       }
      ]
@@ -1850,11 +1982,11 @@
     {
      "depart": "2026-12-13",
      "return": "2027-02-01",
-     "min_price": 821,
+     "min_price": 812,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTMoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDEoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 821,
+       "price": 812,
        "airline": "Etihad",
        "duration_min": 755,
        "stops": 1,
@@ -1883,7 +2015,7 @@
       {
        "price": 941,
        "airline": "Qatar Airways",
-       "duration_min": 760,
+       "duration_min": 785,
        "stops": 1,
        "via": [
         "DOH"
@@ -1892,7 +2024,7 @@
       {
        "price": 941,
        "airline": "Qatar Airways",
-       "duration_min": 785,
+       "duration_min": 760,
        "stops": 1,
        "via": [
         "DOH"
@@ -1903,11 +2035,11 @@
     {
      "depart": "2026-12-14",
      "return": "2027-02-02",
-     "min_price": 671,
+     "min_price": 654,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTQoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDIoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 671,
+       "price": 654,
        "airline": "Etihad",
        "duration_min": 755,
        "stops": 1,
@@ -1916,16 +2048,7 @@
        ]
       },
       {
-       "price": 701,
-       "airline": "Etihad",
-       "duration_min": 770,
-       "stops": 1,
-       "via": [
-        "AUH"
-       ]
-      },
-      {
-       "price": 710,
+       "price": 693,
        "airline": "Etihad",
        "duration_min": 745,
        "stops": 1,
@@ -1934,7 +2057,16 @@
        ]
       },
       {
-       "price": 914,
+       "price": 710,
+       "airline": "Etihad",
+       "duration_min": 770,
+       "stops": 1,
+       "via": [
+        "AUH"
+       ]
+      },
+      {
+       "price": 876,
        "airline": "Turkish Airlines",
        "duration_min": 660,
        "stops": 1,
@@ -1943,24 +2075,22 @@
        ]
       },
       {
-       "price": 956,
-       "airline": "Qatar Airways",
-       "duration_min": 785,
-       "stops": 1,
-       "via": [
-        "DOH"
-       ]
+       "price": 920,
+       "airline": "Air India",
+       "duration_min": 575,
+       "stops": 0,
+       "via": []
       }
      ]
     },
     {
      "depart": "2026-12-15",
      "return": "2027-02-03",
-     "min_price": 758,
+     "min_price": 719,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTUoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDMoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 758,
+       "price": 719,
        "airline": "Etihad",
        "duration_min": 730,
        "stops": 1,
@@ -1969,12 +2099,21 @@
        ]
       },
       {
-       "price": 835,
+       "price": 796,
        "airline": "Turkish Airlines",
        "duration_min": 660,
        "stops": 1,
        "via": [
         "IST"
+       ]
+      },
+      {
+       "price": 871,
+       "airline": "Etihad",
+       "duration_min": 745,
+       "stops": 1,
+       "via": [
+        "AUH"
        ]
       },
       {
@@ -1984,15 +2123,6 @@
        "stops": 1,
        "via": [
         "MUC"
-       ]
-      },
-      {
-       "price": 936,
-       "airline": "Etihad",
-       "duration_min": 745,
-       "stops": 1,
-       "via": [
-        "AUH"
        ]
       },
       {
@@ -2007,11 +2137,11 @@
     {
      "depart": "2026-12-16",
      "return": "2027-02-04",
-     "min_price": 710,
+     "min_price": 719,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTYoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDQoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 710,
+       "price": 719,
        "airline": "Etihad",
        "duration_min": 755,
        "stops": 1,
@@ -2029,7 +2159,7 @@
        ]
       },
       {
-       "price": 919,
+       "price": 928,
        "airline": "Etihad",
        "duration_min": 745,
        "stops": 1,
@@ -2038,16 +2168,18 @@
        ]
       },
       {
-       "price": 930,
-       "airline": "Air India",
-       "duration_min": 575,
-       "stops": 0,
-       "via": []
+       "price": 1000,
+       "airline": "Qatar Airways",
+       "duration_min": 785,
+       "stops": 1,
+       "via": [
+        "DOH"
+       ]
       },
       {
        "price": 1000,
        "airline": "Qatar Airways",
-       "duration_min": 785,
+       "duration_min": 760,
        "stops": 1,
        "via": [
         "DOH"
@@ -2058,11 +2190,11 @@
     {
      "depart": "2026-12-17",
      "return": "2027-02-05",
-     "min_price": 959,
+     "min_price": 942,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTcoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDUoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 959,
+       "price": 942,
        "airline": "Etihad",
        "duration_min": 745,
        "stops": 1,
@@ -2071,13 +2203,20 @@
        ]
       },
       {
-       "price": 967,
+       "price": 950,
        "airline": "Etihad",
        "duration_min": 755,
        "stops": 1,
        "via": [
         "AUH"
        ]
+      },
+      {
+       "price": 963,
+       "airline": "Air India",
+       "duration_min": 575,
+       "stops": 0,
+       "via": []
       },
       {
        "price": 1030,
@@ -2096,35 +2235,19 @@
        "via": [
         "DOH"
        ]
-      },
-      {
-       "price": 1068,
-       "airline": "Air India",
-       "duration_min": 575,
-       "stops": 0,
-       "via": []
       }
      ]
     },
     {
      "depart": "2026-12-18",
      "return": "2027-02-06",
-     "min_price": 853,
+     "min_price": 844,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTgoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDYoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 853,
+       "price": 844,
        "airline": "Etihad",
        "duration_min": 755,
-       "stops": 1,
-       "via": [
-        "AUH"
-       ]
-      },
-      {
-       "price": 1077,
-       "airline": "Etihad",
-       "duration_min": 745,
        "stops": 1,
        "via": [
         "AUH"
@@ -2140,7 +2263,7 @@
        ]
       },
       {
-       "price": 1240,
+       "price": 1115,
        "airline": "Air India",
        "duration_min": 575,
        "stops": 0,
@@ -2154,17 +2277,26 @@
        "via": [
         "DOH"
        ]
+      },
+      {
+       "price": 1388,
+       "airline": "KLMAir France",
+       "duration_min": 655,
+       "stops": 1,
+       "via": [
+        "AMS"
+       ]
       }
      ]
     },
     {
      "depart": "2026-12-19",
      "return": "2027-02-07",
-     "min_price": 996,
+     "min_price": 979,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTkoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDcoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 996,
+       "price": 979,
        "airline": "Etihad",
        "duration_min": 745,
        "stops": 1,
@@ -2173,7 +2305,7 @@
        ]
       },
       {
-       "price": 1243,
+       "price": 1068,
        "airline": "Air India",
        "duration_min": 575,
        "stops": 0,
@@ -2231,8 +2363,8 @@
     "adults": 1,
     "alert_threshold_pct": 3
    },
-   "best": 835,
-   "avg_of_mins": 1005,
+   "best": 796,
+   "avg_of_mins": 944,
    "pairs": [
     {
      "depart": "2026-12-12",
@@ -2257,7 +2389,7 @@
        ]
       },
       {
-       "price": 1142,
+       "price": 1096,
        "airline": "Air France",
        "duration_min": 505,
        "stops": 0,
@@ -2306,6 +2438,13 @@
        ]
       },
       {
+       "price": 968,
+       "airline": "Air India",
+       "duration_min": 575,
+       "stops": 0,
+       "via": []
+      },
+      {
        "price": 1031,
        "airline": "Lufthansa City Airlines, Lufthansa",
        "duration_min": 640,
@@ -2313,13 +2452,6 @@
        "via": [
         "MUC"
        ]
-      },
-      {
-       "price": 1240,
-       "airline": "Air India",
-       "duration_min": 575,
-       "stops": 0,
-       "via": []
       },
       {
        "price": 1413,
@@ -2333,17 +2465,24 @@
     {
      "depart": "2026-12-14",
      "return": "2027-02-02",
-     "min_price": 914,
+     "min_price": 876,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTQoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDIoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 914,
+       "price": 876,
        "airline": "Turkish Airlines",
        "duration_min": 660,
        "stops": 1,
        "via": [
         "IST"
        ]
+      },
+      {
+       "price": 920,
+       "airline": "Air India",
+       "duration_min": 575,
+       "stops": 0,
+       "via": []
       },
       {
        "price": 1001,
@@ -2353,13 +2492,6 @@
        "via": [
         "MUC"
        ]
-      },
-      {
-       "price": 1010,
-       "airline": "Air India",
-       "duration_min": 575,
-       "stops": 0,
-       "via": []
       },
       {
        "price": 1133,
@@ -2382,11 +2514,11 @@
     {
      "depart": "2026-12-15",
      "return": "2027-02-03",
-     "min_price": 835,
+     "min_price": 796,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTUoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDMoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 835,
+       "price": 796,
        "airline": "Turkish Airlines",
        "duration_min": 660,
        "stops": 1,
@@ -2444,13 +2576,6 @@
        ]
       },
       {
-       "price": 930,
-       "airline": "Air India",
-       "duration_min": 575,
-       "stops": 0,
-       "via": []
-      },
-      {
        "price": 1001,
        "airline": "Lufthansa",
        "duration_min": 625,
@@ -2458,6 +2583,13 @@
        "via": [
         "MUC"
        ]
+      },
+      {
+       "price": 1055,
+       "airline": "Air India",
+       "duration_min": 575,
+       "stops": 0,
+       "via": []
       },
       {
        "price": 1156,
@@ -2480,18 +2612,18 @@
     {
      "depart": "2026-12-17",
      "return": "2027-02-05",
-     "min_price": 1068,
+     "min_price": 963,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTcoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDUoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 1068,
+       "price": 963,
        "airline": "Air India",
        "duration_min": 575,
        "stops": 0,
        "via": []
       },
       {
-       "price": 1115,
+       "price": 1156,
        "airline": "Air France",
        "duration_min": 505,
        "stops": 0,
@@ -2518,11 +2650,11 @@
     {
      "depart": "2026-12-18",
      "return": "2027-02-06",
-     "min_price": 1240,
+     "min_price": 1115,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTgoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDYoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 1240,
+       "price": 1115,
        "airline": "Air India",
        "duration_min": 575,
        "stops": 0,
@@ -2558,11 +2690,11 @@
     {
      "depart": "2026-12-19",
      "return": "2027-02-07",
-     "min_price": 1243,
+     "min_price": 1068,
      "url": "https://www.google.com/travel/flights/search?tfs=GhwSCjIwMjYtMTItMTkoAWoFEgNDREdyBRIDREVMGhwSCjIwMjctMDItMDcoAWoFEgNERUxyBRIDQ0RHQgEBSAGYAQE=&hl=&curr=EUR&hl=en",
      "top": [
       {
-       "price": 1243,
+       "price": 1068,
        "airline": "Air India",
        "duration_min": 575,
        "stops": 0,
